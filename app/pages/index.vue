@@ -19,7 +19,7 @@ const filteredCharacters = computed(() => {
   if (!characters.value) return []
 
   return characters.value.filter(char => {
-    const matchesSearch = char.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesSearch = getCharacterName(char.name).toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesRarity = selectedRarity.value ? char.rarity === selectedRarity.value : true
     const matchesPath = selectedPath.value ? char.path === selectedPath.value : true
     
@@ -129,7 +129,9 @@ const toggleElement = (element) => {
         <div v-else class="absolute inset-0 bg-slate-800"></div>
 
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-transparent pt-16 pb-3 px-3 flex flex-col justify-end">
-          <h2 class="text-white font-bold truncate text-base shadow-sm mb-1">{{ character.name }}</h2>
+          <h2 class="text-white font-bold truncate text-base shadow-sm mb-1">
+            {{ getCharacterName(character.name) }}
+          </h2>
           <div class="flex items-center space-x-1">
             <span :class="['text-[0.65rem] font-bold px-1.5 py-0.5 rounded', character.rarity == 5 ? 'bg-yellow-500 text-yellow-950' : 'bg-purple-500 text-purple-100']">
               {{ character.rarity }}★

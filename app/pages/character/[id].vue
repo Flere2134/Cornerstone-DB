@@ -23,7 +23,7 @@ const { data: character, pending, error } = await useFetch(`/api/character/${rou
           class="w-full object-contain mb-6 drop-shadow-2xl"
           alt="Character Portrait"
         />
-        <h1 class="text-4xl font-bold mb-3 text-center">{{ character.name }}</h1>
+        <h1 class="text-4xl font-bold mb-3 text-center">{{ getCharacterName(character.name) }}</h1>
         <div class="flex space-x-2 text-sm font-semibold mb-4">
           <span class="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full">{{ character.rarity }}-Star</span>
           <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full">{{ getOfficialPath(character.path) }}</span>

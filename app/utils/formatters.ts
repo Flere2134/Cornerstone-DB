@@ -44,3 +44,7 @@ export const parseHoyoMarkup = (text: string): string => {
 
   return parsed
 }
+
+export const getCharacterName = (name: string): string => {
+  return name === '{NICKNAME}' ? 'Trailblazer' : name
+}
