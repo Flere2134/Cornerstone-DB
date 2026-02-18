@@ -178,6 +178,9 @@ const rightAbilities = computed(() => {
               </tr>
             </tbody>
           </table>
+          <div v-if="character.description" class="mt-4 bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 italic text-slate-300 leading-relaxed text-sm shadow-inner">
+            <p v-html="parseHoyoMarkup(character.description)"></p>
+          </div>
         </div>
       </div>
 

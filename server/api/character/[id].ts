@@ -3,13 +3,14 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id') as string
   
   // 1. Added rawPromotions to the master fetch list
-  const [rawChars, rawSkills, rawRanks, rawTrees, rawProps, rawPromotions] = await Promise.all([
+  const [rawChars, rawSkills, rawRanks, rawTrees, rawProps, rawPromotions, rawDesc] = await Promise.all([
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/characters.json', { responseType: 'text' }),
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_skills.json', { responseType: 'text' }),
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_ranks.json', { responseType: 'text' }),
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_skill_trees.json', { responseType: 'text' }),
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/properties.json', { responseType: 'text' }),
-    $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_promotions.json', { responseType: 'text' })
+    $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_promotions.json', { responseType: 'text' }),
+    $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/descriptions.json', { responseType: 'text' })
   ])
   
   const chars = JSON.parse(rawChars)
@@ -17,15 +18,21 @@ export default defineEventHandler(async (event) => {
   const ranksData = JSON.parse(rawRanks)
   const treesData = JSON.parse(rawTrees)
   const propsData = JSON.parse(rawProps)
-  const promosData = JSON.parse(rawPromotions) // Parsed the scaling database
+  const promosData = JSON.parse(rawPromotions)
+  const descData = JSON.parse(rawDesc)
   
   const character = chars[id]
   
   if (character) {
+    // We bypass the ID mismatch by searching the database for the matching character name!
+    const charDesc = Object.values(descData).find((d: any) => d.title === character.name)
+    
+    if (charDesc) {
+      character.description = String((charDesc as any).desc).replace(/\{NICKNAME\}/g, 'Trailblazer')
+    }
     if (character.skills) {
       character.kit = character.skills.map((skillId: string) => skillsData[skillId])
     }
-    
     if (character.ranks) {
       character.eidolons = character.ranks.map((rankId: string) => ranksData[rankId])
     }

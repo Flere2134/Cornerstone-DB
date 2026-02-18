@@ -68,7 +68,7 @@ const filteredRelics = computed(() => {
     <div v-if="pending" class="text-xl animate-pulse text-center mt-20 text-slate-300">Loading Relics...</div>
     <div v-else-if="error" class="text-red-400 text-center mt-20">Error loading relics.</div>
 
-    <div v-else-if="relics" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div v-else-if="relics" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
       
       <div 
         v-for="relic in filteredRelics" 
