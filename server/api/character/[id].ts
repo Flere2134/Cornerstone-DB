@@ -2,17 +2,20 @@
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id') as string
   
-  const [rawChars, rawSkills, rawRanks, rawTrees] = await Promise.all([
+  // 1. Added rawProps to fetch the official icons dictionary
+  const [rawChars, rawSkills, rawRanks, rawTrees, rawProps] = await Promise.all([
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/characters.json', { responseType: 'text' }),
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_skills.json', { responseType: 'text' }),
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_ranks.json', { responseType: 'text' }),
-    $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_skill_trees.json', { responseType: 'text' })
+    $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_skill_trees.json', { responseType: 'text' }),
+    $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/properties.json', { responseType: 'text' })
   ])
   
   const chars = JSON.parse(rawChars)
   const skillsData = JSON.parse(rawSkills)
   const ranksData = JSON.parse(rawRanks)
   const treesData = JSON.parse(rawTrees)
+  const propsData = JSON.parse(rawProps) // Parsed the properties database
   
   const character = chars[id]
   
@@ -27,9 +30,9 @@ export default defineEventHandler(async (event) => {
 
     if (character.skill_trees) {
       const bonusAbilities: any[] = []
-      const statTotals: Record<string, { value: number, isPercent: boolean }> = {}
+      // Added 'icon' to the TypeScript record
+      const statTotals: Record<string, { value: number, isPercent: boolean, icon: string }> = {}
 
-      // UPDATED: Fixed 'HPAddedRatio' to match Hoyoverse's actual internal naming
       const statTypeMap: Record<string, { name: string, isPercent: boolean }> = {
         'DefenseAddedRatio': { name: 'DEF', isPercent: true },
         'AttackAddedRatio': { name: 'ATK', isPercent: true },
@@ -67,25 +70,32 @@ export default defineEventHandler(async (event) => {
 
         if (hasStats) {
           node.levels[0].properties.forEach((prop: any) => {
-            // UPDATED: Added explicit 'as string' assertions to clear the TypeScript errors!
             const propType = prop.type as string
             const statInfo = statTypeMap[propType] || { name: propType, isPercent: false }
             const statName = statInfo.name as string
             
+            // 2. Look up the official icon path from the new properties database!
+            const officialIcon = propsData[propType]?.icon || ''
+            
             if (!statTotals[statName]) {
-              statTotals[statName] = { value: 0, isPercent: statInfo.isPercent }
+              statTotals[statName] = { 
+                value: 0, 
+                isPercent: statInfo.isPercent,
+                icon: officialIcon // Save the icon to the stat array
+              }
             }
             statTotals[statName].value += prop.value
           })
         }
       })
 
+      // 3. Pass the icon string to the final formatted array
       character.stat_totals = Object.entries(statTotals).map(([key, stat]) => {
         const formatted = stat.isPercent ? `${+(stat.value * 100).toFixed(1)}%` : `${+stat.value.toFixed(1)}`
-        return { name: key, value: formatted }
+        return { name: key, value: formatted, icon: stat.icon }
       })
 
-      character.bonus_abilities = bonusAbilities.splice(-3)
+      character.bonus_abilities = bonusAbilities.slice(-3)
     }
     
     return character

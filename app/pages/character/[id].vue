@@ -59,7 +59,7 @@ const rightAbilities = computed(() => {
               <tr class="border-b border-slate-700">
                 <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">Path</th>
                 <td class="p-4 flex items-center gap-2 font-medium">
-                  <NuxtImg :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(character.path)}.png`" class="w-5 h-5 invert opacity-70" />
+                  <NuxtImg :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(character.path)}.png`" class="w-5 h-5 opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
                   {{ getOfficialPath(character.path) }}
                 </td>
               </tr>
@@ -159,7 +159,14 @@ const rightAbilities = computed(() => {
               class="flex justify-between items-center text-slate-200"
             >
               <span class="flex items-center gap-3 font-semibold">
-                <div class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs">✨</div> 
+                
+                <NuxtImg 
+                  v-if="stat.icon" 
+                  :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${stat.icon}`" 
+                  class="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]" 
+                  alt="Stat Icon"
+                />
+                <div v-else class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs">✨</div> 
                 {{ stat.name }}
               </span>
               <span class="font-mono text-teal-400 font-bold">{{ stat.value }}</span>

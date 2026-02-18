@@ -128,7 +128,7 @@ const toggleElement = (element) => {
         />
         <div v-else class="absolute inset-0 bg-slate-800"></div>
 
-        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent pt-12 pb-3 px-3 flex flex-col justify-end">
+        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent group-hover:from-teal-800/90 group-hover:via-teal-700/60 transition-colors duration-300 pt-12 pb-3 px-3 flex flex-col justify-end">
           <h2 class="text-white font-bold truncate text-center text-sm shadow-sm">
             {{ getCharacterName(character.name) }}
           </h2>
