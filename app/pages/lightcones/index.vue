@@ -33,11 +33,11 @@ const togglePath = (path) => {
 </script>
 
 <template>
-  <div class="p-8 max-w-[1400px] mx-auto pb-20">
+  <div class="p-8 max-w-5xl mx-auto pb-20">
     
     <div class="mb-10 text-center">
       <h1 class="text-4xl font-bold mb-2 tracking-tight">Lightcones</h1>
-      <p class="text-slate-400">Honkai: Star Rail Equipment Database</p>
+      <p class="text-slate-400">Honkai: Star Rail</p>
     </div>
 
     <div class="max-w-4xl mx-auto mb-10 space-y-4">
@@ -105,19 +105,10 @@ const togglePath = (path) => {
         />
         <div v-else class="absolute inset-0 bg-slate-800"></div>
 
-        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-900/90 to-transparent pt-16 pb-3 px-3 flex flex-col justify-end">
-          <h2 class="text-white font-bold truncate text-sm shadow-sm mb-1" :title="lc.name">{{ lc.name }}</h2>
-          <div class="flex items-center space-x-1">
-            <span :class="[
-              'text-[0.65rem] font-bold px-1.5 py-0.5 rounded', 
-              lc.rarity == 5 ? 'bg-yellow-500 text-yellow-950' : lc.rarity == 4 ? 'bg-purple-500 text-purple-100' : 'bg-blue-500 text-blue-100'
-            ]">
-              {{ lc.rarity }}★
-            </span>
-            <span class="bg-slate-800/80 text-slate-300 text-[0.65rem] font-semibold px-1.5 py-0.5 rounded backdrop-blur-sm border border-slate-600/30">
-              {{ getOfficialPath(lc.path) }}
-            </span>
-          </div>
+        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent pt-12 pb-3 px-3 flex flex-col justify-end">
+          <h2 class="text-white font-bold truncate text-center text-sm shadow-sm" :title="lc.name">
+            {{ lc.name }}
+          </h2>
         </div>
       </NuxtLink>
 
