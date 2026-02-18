@@ -42,7 +42,7 @@ const { data: lc, pending, error } = await useFetch(`/api/lightcone/${route.para
         <h2 class="text-2xl font-bold border-b border-slate-700 pb-2 mb-6">Lightcone Ability</h2>
         
         <div v-if="lc.skill" class="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-lg">
-          <h3 class="text-2xl font-bold text-amber-400 mb-4">{{ lc.skill.name }}</h3>
+          <h3 class="text-2xl font-bold text-white-400 mb-4">{{ lc.skill.name }}</h3>
           
           <p class="text-slate-300 text-base leading-relaxed" v-html="parseHoyoMarkup(lc.skill.desc)"></p>
         </div>
