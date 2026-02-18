@@ -133,34 +133,36 @@ const rightAbilities = computed(() => {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
         
         <div class="space-y-4">
-          <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
-            <h3 class="font-bold text-lg text-amber-400 mb-2">1. Leverage</h3>
-            <p class="text-sm text-slate-400">[Ability Description placeholder awaiting tree parser]</p>
-          </div>
-          <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
-            <h3 class="font-bold text-lg text-amber-400 mb-2">2. Hot Hand</h3>
-            <p class="text-sm text-slate-400">[Ability Description placeholder awaiting tree parser]</p>
-          </div>
-          <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
-            <h3 class="font-bold text-lg text-amber-400 mb-2">3. Bingo!</h3>
-            <p class="text-sm text-slate-400">[Ability Description placeholder awaiting tree parser]</p>
+          <div 
+            v-for="(ability, index) in character.bonus_abilities" 
+            :key="ability.id" 
+            class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 flex gap-4 items-start"
+          >
+            <NuxtImg 
+              v-if="ability.icon" 
+              :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${ability.icon}`" 
+              class="w-12 h-12 bg-slate-900 rounded-full border border-slate-600 flex-shrink-0" 
+            />
+            <div>
+              <h3 class="font-bold text-lg text-amber-400 mb-2">{{ index + 1 }}. {{ ability.name }}</h3>
+              <p class="text-sm text-slate-300 leading-relaxed" v-html="parseHoyoMarkup(ability.desc)"></p>
+            </div>
           </div>
         </div>
 
         <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 h-fit">
           <h3 class="font-bold text-slate-300 mb-4 uppercase tracking-wider text-sm border-b border-slate-700 pb-2">Max Ascension Stats</h3>
           <ul class="space-y-4">
-            <li class="flex justify-between items-center text-slate-200">
-              <span class="flex items-center gap-3 font-semibold"><div class="w-6 h-6 bg-slate-700 rounded-full"></div> DEF</span>
-              <span class="font-mono text-teal-400">27.5%</span>
-            </li>
-            <li class="flex justify-between items-center text-slate-200">
-              <span class="flex items-center gap-3 font-semibold"><div class="w-6 h-6 bg-slate-700 rounded-full"></div> DMG Boost: Imaginary</span>
-              <span class="font-mono text-teal-400">14.4%</span>
-            </li>
-            <li class="flex justify-between items-center text-slate-200">
-              <span class="flex items-center gap-3 font-semibold"><div class="w-6 h-6 bg-slate-700 rounded-full"></div> Effect RES</span>
-              <span class="font-mono text-teal-400">10%</span>
+            <li 
+              v-for="stat in character.stat_totals" 
+              :key="stat.name" 
+              class="flex justify-between items-center text-slate-200"
+            >
+              <span class="flex items-center gap-3 font-semibold">
+                <div class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs">✨</div> 
+                {{ stat.name }}
+              </span>
+              <span class="font-mono text-teal-400 font-bold">{{ stat.value }}</span>
             </li>
           </ul>
         </div>
