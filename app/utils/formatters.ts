@@ -17,32 +17,40 @@ export const getOfficialPath = (internalPath: string): string => {
 
 // ... (keep your existing pathMap and getOfficialPath function up here) ...
 
-export const parseHoyoMarkup = (text: string): string => {
+// utils/formatters.ts
+export const parseHoyoMarkup = (text: string, params: number[] = []) => {
   if (!text) return ''
+  let result = text
 
-  let parsed = text
+  // 1. If we have params, inject the real numbers!
+  if (params && params.length > 0) {
+    // This regex looks for tags like #1[i] or #2[f1] and checks if a % sign follows them
+    result = result.replace(/#(\d+)\[.*?\](%?)/g, (match, indexStr, percentSign) => {
+      const index = parseInt(indexStr) - 1
+      let value = params[index]
 
-  // 1. Convert Hoyoverse color tags to actual CSS spans
-  // Example: <color=#F84F36>Fire DMG</color>
-  parsed = parsed.replace(
-    /<color=#([a-zA-Z0-9]{6,8})>(.*?)<\/color>/g, 
-    '<span style="color: #$1" class="font-bold drop-shadow-md">$2</span>'
-  )
+      if (value === undefined) return `<span class="text-amber-400 font-bold">[ X ]${percentSign}</span>`
 
-  // 2. Convert <unbreak> tags to Tailwind's whitespace-nowrap
-  parsed = parsed.replace(
-    /<unbreak>(.*?)<\/unbreak>/g, 
-    '<span class="whitespace-nowrap">$1</span>'
-  )
+      // If Hoyo placed a % sign after the tag, we need to multiply the raw decimal by 100
+      if (percentSign) {
+        value = value * 100
+        // Round to 1 decimal place to fix ugly floating-point math (e.g. 28.0000001 -> 28)
+        value = Math.round(value * 10) / 10
+      }
 
-  // 3. Clean up the raw variable placeholders like #1[i] or #4[f1]
-  // We will replace them with a stylized amber badge for now. 
-  parsed = parsed.replace(
-    /#\d+\[[a-zA-Z0-9]+\]/g, 
-    '<span class="text-amber-400 font-bold bg-amber-400/10 px-1 rounded">[ X ]</span>'
-  )
+      return `<span class="text-amber-400 font-bold">${value}${percentSign}</span>`
+    })
+  }
 
-  return parsed
+  // 2. Fallback: If no params were provided, revert to the [ X ] placeholder
+  result = result.replace(/#\d+\[.*?\](%?)/g, (match, percentSign) => `<span class="text-amber-400 font-bold">[ X ]${percentSign}</span>`)
+  
+  // 3. Clean up Hoyoverse's internal HTML tags
+  result = result.replace(/<unbreak>/g, '').replace(/<\/unbreak>/g, '')
+  result = result.replace(/<color=(.*?)>(.*?)<\/color>/g, '<span style="color: $1">$2</span>')
+  result = result.replace(/\\n/g, '<br>')
+
+  return result
 }
 
 export const getCharacterName = (name: string): string => {

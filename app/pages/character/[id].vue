@@ -1,8 +1,11 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 const route = useRoute()
 
 const { data: character, pending, error } = await useFetch(`/api/character/${route.params.id}`)
+
+//Track slider level
+const skillLevels = reactive({})
 
 // Filter the kit into Left and Right columns based on your wireframe
 const leftAbilities = computed(() => {
@@ -91,7 +94,23 @@ const rightAbilities = computed(() => {
                 </div>
               </div>
             </div>
-            <p class="text-slate-300 text-sm leading-relaxed mb-6" v-html="parseHoyoMarkup(skill.desc)"></p>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6 min-h-[80px]" 
+               v-html="parseHoyoMarkup(skill.desc, skill.params[(skillLevels[skill.id] || 1) - 1])">
+            </p>
+            
+            <div v-if="skill.params && skill.params.length > 1" class="mt-4 flex items-center gap-3 select-none">
+               <span class="text-xs font-bold text-slate-500">Lv.1</span>
+
+               <input 
+                 type="range" min="1" :max="skill.params.length" step="1" 
+                 v-model.number="skillLevels[skill.id]"
+                 class="flex-1 h-1 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
+               />
+
+               <span class="text-xs font-bold text-teal-400 whitespace-nowrap">
+                  Lv. {{ skillLevels[skill.id] || 1 }} <span class="text-slate-500">/ {{ skill.params.length }}</span>
+               </span>
+            </div>
             
             <table class="w-full border-collapse border border-slate-600 text-xs text-center">
               <tbody>
@@ -123,7 +142,23 @@ const rightAbilities = computed(() => {
                 </div>
               </div>
             </div>
-            <p class="text-slate-300 text-sm leading-relaxed" v-html="parseHoyoMarkup(skill.desc)"></p>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6 min-h-[80px]" 
+               v-html="parseHoyoMarkup(skill.desc, skill.params[(skillLevels[skill.id] || 1) - 1])">
+            </p>
+            
+            <div v-if="skill.params && skill.params.length > 1" class="mt-4 flex items-center gap-3 select-none">
+               <span class="text-xs font-bold text-slate-500">Lv.1</span>
+
+               <input 
+                 type="range" min="1" :max="skill.params.length" step="1" 
+                 v-model.number="skillLevels[skill.id]"
+                 class="flex-1 h-1 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
+               />
+
+               <span class="text-xs font-bold text-teal-400 whitespace-nowrap">
+                  Lv. {{ skillLevels[skill.id] || 1 }} <span class="text-slate-500">/ {{ skill.params.length }}</span>
+               </span>
+            </div>
           </div>
         </div>
 

@@ -1,8 +1,11 @@
 <script setup>
+import { ref } from 'vue'
 const route = useRoute()
 
-// Fetch the specific Lightcone using the URL ID
 const { data: lc, pending, error } = await useFetch(`/api/lightcone/${route.params.id}`)
+
+// Track the current dropdown value (1-5)
+const currentRank = ref(1)
 </script>
 
 <template>
@@ -41,10 +44,28 @@ const { data: lc, pending, error } = await useFetch(`/api/lightcone/${route.para
         
         <h2 class="text-2xl font-bold border-b border-slate-700 pb-2 mb-6">Lightcone Ability</h2>
         
-        <div v-if="lc.skill" class="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-lg">
-          <h3 class="text-2xl font-bold text-white-400 mb-4">{{ lc.skill.name }}</h3>
+        <div v-if="lc.skill" class="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-lg transition-all">
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="text-2xl font-bold text-amber-400">{{ lc.skill.name }}</h3>
+            
+            <div class="relative">
+              <select 
+                v-model.number="currentRank" 
+                class="appearance-none bg-amber-500/20 text-amber-300 font-bold px-4 py-1.5 rounded-md border border-amber-500/30 outline-none cursor-pointer hover:bg-amber-500/30 transition-colors pr-8 text-sm"
+              >
+                <option :value="1" class="bg-slate-800 text-amber-300">Superimposition 1</option>
+                <option :value="2" class="bg-slate-800 text-amber-300">Superimposition 2</option>
+                <option :value="3" class="bg-slate-800 text-amber-300">Superimposition 3</option>
+                <option :value="4" class="bg-slate-800 text-amber-300">Superimposition 4</option>
+                <option :value="5" class="bg-slate-800 text-amber-300">Superimposition 5</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-amber-300">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+              </div>
+            </div>
+          </div>
           
-          <p class="text-slate-300 text-base leading-relaxed" v-html="parseHoyoMarkup(lc.skill.desc)"></p>
+          <p class="text-slate-300 text-base leading-relaxed" v-html="parseHoyoMarkup(lc.skill.desc, lc.skill.params[currentRank - 1])"></p>
         </div>
 
         <div v-if="lc.desc" class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700/50 italic text-slate-400">
