@@ -37,7 +37,7 @@ const togglePath = (path) => {
     
     <div class="mb-10 text-center">
       <h1 class="text-4xl font-bold mb-2 tracking-tight">Lightcones</h1>
-      <p class="text-slate-400">Honkai: Star Rail</p>
+      <p class="text-slate-400">Honkai:Star Rail</p>
     </div>
 
     <div class="max-w-4xl mx-auto mb-10 space-y-4">
