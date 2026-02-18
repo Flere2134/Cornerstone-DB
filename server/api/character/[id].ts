@@ -1,6 +1,6 @@
 // server/api/character/[id].ts
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
+  const id = getRouterParam(event, 'id') as string
   
   // 1. Fetch basic character data
   const rawChars = await $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/characters.json', {

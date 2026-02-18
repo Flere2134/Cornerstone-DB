@@ -57,7 +57,7 @@ const toggleElement = (element) => {
           v-model="searchQuery" 
           type="text" 
           placeholder="Search characters by name..." 
-          class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+          class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
         />
       </div>
 
@@ -78,7 +78,7 @@ const toggleElement = (element) => {
             :key="path" 
             @click="togglePath(path)"
             :title="getOfficialPath(path)"
-            :class="['p-1.5 rounded-md transition-all flex items-center justify-center', selectedPath === path ? 'bg-blue-500/20 border border-blue-500/30' : 'hover:bg-slate-700 border border-transparent']"
+            :class="['p-1.5 rounded-md transition-all flex items-center justify-center', selectedPath === path ? 'bg-teal-500/20 border-teal-500/30 ring-1 ring-teal-500/50' : 'hover:bg-slate-700 border border-transparent']"
           >
             <NuxtImg 
               :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(path)}.png`" 
@@ -95,7 +95,7 @@ const toggleElement = (element) => {
             :key="element" 
             @click="toggleElement(element)"
             :title="element === 'Thunder' ? 'Lightning' : element"
-            :class="['p-1.5 rounded-md transition-all flex items-center justify-center', selectedElement === element ? 'bg-blue-500/20 border border-blue-500/30' : 'hover:bg-slate-700 border border-transparent']"
+            :class="['p-1.5 rounded-md transition-all flex items-center justify-center', selectedElement === element ? 'bg-teal-500/20 border-teal-500/30 ring-1 ring-teal-500/50' : 'hover:bg-slate-700 border border-transparent']"
           >
             <NuxtImg 
               :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/element/${element}.png`" 
@@ -117,7 +117,7 @@ const toggleElement = (element) => {
         v-for="character in filteredCharacters" 
         :key="character.id"
         :to="`/character/${character.id}`" 
-        class="group relative aspect-[9/14] rounded-xl overflow-hidden shadow-md border border-slate-700/50 hover:border-blue-400 hover:shadow-blue-500/30 transition-all duration-300 cursor-pointer"
+        class="group relative aspect-[9/14] rounded-xl overflow-hidden shadow-md border border-slate-700/50 hover:border-teal-400 hover:border-teal-400 hover:shadow-[0_0_15px_-3px_rgba(45,212,191,0.3)] transition-all duration-300 cursor-pointer"
       >
         <NuxtImg
           v-if="character.preview"

@@ -47,7 +47,7 @@ const togglePath = (path) => {
           v-model="searchQuery" 
           type="text" 
           placeholder="Search lightcones by name..." 
-          class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+          class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
         />
       </div>
 
@@ -71,7 +71,7 @@ const togglePath = (path) => {
             :key="path" 
             @click="togglePath(path)"
             :title="getOfficialPath(path)"
-            :class="['p-1.5 rounded-md transition-all flex items-center justify-center', selectedPath === path ? 'bg-blue-500/20 border border-blue-500/30' : 'hover:bg-slate-700 border border-transparent']"
+            :class="['p-1.5 rounded-md transition-all flex items-center justify-center', selectedPath === path ? 'bg-teal-500/20 border border-teal-500/30' : 'hover:bg-slate-700 border border-transparent']"
           >
             <NuxtImg 
               :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(path)}.png`" 
@@ -94,7 +94,7 @@ const togglePath = (path) => {
         v-for="lc in filteredLightcones" 
         :key="lc.id"
         :to="`/lightcones/${lc.id}`" 
-        class="group relative aspect-[9/14] rounded-xl overflow-hidden shadow-md border border-slate-700/50 hover:border-blue-400 hover:shadow-blue-500/30 transition-all duration-300 cursor-pointer"
+        class="group relative aspect-[9/14] rounded-xl overflow-hidden shadow-md border border-slate-700/50 hover:border-teal-400 hover:shadow-teal-500/30 transition-all duration-300 cursor-pointer"
       >
         <NuxtImg
           v-if="lc.preview"
