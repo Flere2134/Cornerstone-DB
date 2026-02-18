@@ -2,20 +2,22 @@
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id') as string
   
-  // 1. Added rawProps to fetch the official icons dictionary
-  const [rawChars, rawSkills, rawRanks, rawTrees, rawProps] = await Promise.all([
+  // 1. Added rawPromotions to the master fetch list
+  const [rawChars, rawSkills, rawRanks, rawTrees, rawProps, rawPromotions] = await Promise.all([
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/characters.json', { responseType: 'text' }),
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_skills.json', { responseType: 'text' }),
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_ranks.json', { responseType: 'text' }),
     $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_skill_trees.json', { responseType: 'text' }),
-    $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/properties.json', { responseType: 'text' })
+    $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/properties.json', { responseType: 'text' }),
+    $fetch<string>('https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/character_promotions.json', { responseType: 'text' })
   ])
   
   const chars = JSON.parse(rawChars)
   const skillsData = JSON.parse(rawSkills)
   const ranksData = JSON.parse(rawRanks)
   const treesData = JSON.parse(rawTrees)
-  const propsData = JSON.parse(rawProps) // Parsed the properties database
+  const propsData = JSON.parse(rawProps)
+  const promosData = JSON.parse(rawPromotions) // Parsed the scaling database
   
   const character = chars[id]
   
@@ -28,9 +30,17 @@ export default defineEventHandler(async (event) => {
       character.eidolons = character.ranks.map((rankId: string) => ranksData[rankId])
     }
 
+    // 2. Attach the ascension scaling data to the character!
+    if (promosData) {
+      // Find the character's promotion data. We check the exact ID, and fallback to searching the array
+      const charPromos = promosData[id] || Object.values(promosData).find((p: any) => p[0]?.id?.toString().startsWith(id))
+      if (charPromos) {
+        character.promotions = charPromos
+      }
+    }
+
     if (character.skill_trees) {
       const bonusAbilities: any[] = []
-      // Added 'icon' to the TypeScript record
       const statTotals: Record<string, { value: number, isPercent: boolean, icon: string }> = {}
 
       const statTypeMap: Record<string, { name: string, isPercent: boolean }> = {
@@ -74,22 +84,16 @@ export default defineEventHandler(async (event) => {
             const statInfo = statTypeMap[propType] || { name: propType, isPercent: false }
             const statName = statInfo.name as string
             
-            // 2. Look up the official icon path from the new properties database!
             const officialIcon = propsData[propType]?.icon || ''
             
             if (!statTotals[statName]) {
-              statTotals[statName] = { 
-                value: 0, 
-                isPercent: statInfo.isPercent,
-                icon: officialIcon // Save the icon to the stat array
-              }
+              statTotals[statName] = { value: 0, isPercent: statInfo.isPercent, icon: officialIcon }
             }
             statTotals[statName].value += prop.value
           })
         }
       })
 
-      // 3. Pass the icon string to the final formatted array
       character.stat_totals = Object.entries(statTotals).map(([key, stat]) => {
         const formatted = stat.isPercent ? `${+(stat.value * 100).toFixed(1)}%` : `${+stat.value.toFixed(1)}`
         return { name: key, value: formatted, icon: stat.icon }

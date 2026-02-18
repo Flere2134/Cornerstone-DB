@@ -1,13 +1,88 @@
 <script setup>
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue' // Make sure ref is imported!
 const route = useRoute()
 
 const { data: character, pending, error } = await useFetch(`/api/character/${route.params.id}`)
 
-//Track slider level
 const skillLevels = reactive({})
+const charLevel = ref(80) // Set default to Max Level 80
 
-// Filter the kit into Left and Right columns based on your wireframe
+// Determine which Ascension bracket the character is in
+const getAscensionIndex = (level) => {
+  if (level <= 20) return 0
+  if (level <= 30) return 1
+  if (level <= 40) return 2
+  if (level <= 50) return 3
+  if (level <= 60) return 4
+  if (level <= 70) return 5
+  return 6
+}
+
+// Automatically calculate the precise stat based on their current level
+// Automatically calculate the precise stat based on their current level
+// Automatically calculate the precise stat based on their current level
+// Automatically calculate the precise stat based on their current level
+const getStat = (statName, level) => {
+  if (!character.value?.promotions) return '---'
+  
+  const ascIndex = getAscensionIndex(level)
+  
+  // 1. Grab the array safely! (We check for the .values wrapper FIRST before flattening)
+  let promoList = character.value.promotions.values || character.value.promotions
+  
+  // Force the data into an array ONLY if it's still a flat object
+  if (!Array.isArray(promoList)) {
+    promoList = Object.values(promoList)
+  }
+
+  const promoData = promoList[ascIndex]
+  if (!promoData) return '---'
+
+  const statsContainer = promoData.values || promoData
+  let statInfo = null
+
+  // 2. The Rosetta Stone: Maps your simple names to Hoyoverse's internal engine names
+  const statKeys = {
+    'atk': ['atk', 'AttackBase', 'Attack', 'BaseAttack'],
+    'def': ['def', 'DefenceBase', 'DefenseBase', 'Defence', 'Defense', 'BaseDefence', 'BaseDefense'],
+    'hp':  ['hp', 'HPBase', 'MaxHPBase', 'MaxHP', 'BaseHP'],
+    'spd': ['spd', 'SpeedBase', 'Speed', 'BaseSpeed'],
+    'taunt': ['taunt', 'BaseAggro', 'Aggro', 'BaseTaunt']
+  }
+  
+  const possibleKeys = statKeys[statName] || [statName]
+
+  // 3. Deep search through the container
+  if (Array.isArray(statsContainer)) {
+    for (const item of statsContainer) {
+      for (const k of possibleKeys) {
+        if (item[k]) { statInfo = item[k]; break; }
+      }
+      if (statInfo) break;
+
+      if (item.type && possibleKeys.includes(item.type)) {
+        statInfo = item.value || item;
+        break;
+      }
+    }
+  } else {
+    // If it's a flat object
+    for (const k of possibleKeys) {
+      if (statsContainer[k]) {
+        statInfo = statsContainer[k]
+        break;
+      }
+    }
+  }
+
+  // 4. Final safety fallback
+  if (!statInfo) return '---'
+
+  const base = statInfo.base !== undefined ? statInfo.base : (statInfo.value || 0)
+  const step = statInfo.step || 0
+  
+  return Math.round(base + (level - 1) * step)
+}
 const leftAbilities = computed(() => {
   if (!character.value?.kit) return []
   return character.value.kit.filter(s => ['Basic ATK', 'Ultimate', 'Technique'].includes(s.type_text))
@@ -46,8 +121,43 @@ const rightAbilities = computed(() => {
             <tbody>
               <tr class="border-b border-slate-700">
                 <th class="p-4 bg-slate-800/80 w-1/3 text-slate-400 font-semibold">Name</th>
-                <td class="p-4 font-bold text-white text-lg">{{ getCharacterName(character.name) }}</td>
+                <td class="p-4 font-bold text-white text-lg">{{ character.name }}</td>
               </tr>
+              
+              <tr class="border-b border-slate-700">
+                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold align-middle">
+                  Level <span class="text-teal-400 font-bold ml-1">{{ charLevel }}</span>
+                </th>
+                <td class="p-4">
+                  <input 
+                    type="range" min="1" max="80" step="1" 
+                    v-model.number="charLevel"
+                    class="w-full h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500/30" 
+                  />
+                </td>
+              </tr>
+
+              <tr class="border-b border-slate-700">
+                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">ATK</th>
+                <td class="p-4 font-medium text-slate-200">{{ getStat('atk', charLevel) }}</td>
+              </tr>
+              <tr class="border-b border-slate-700">
+                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">DEF</th>
+                <td class="p-4 font-medium text-slate-200">{{ getStat('def', charLevel) }}</td>
+              </tr>
+              <tr class="border-b border-slate-700">
+                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">HP</th>
+                <td class="p-4 font-medium text-slate-200">{{ getStat('hp', charLevel) }}</td>
+              </tr>
+              <tr class="border-b border-slate-700">
+                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">SPD</th>
+                <td class="p-4 font-medium text-slate-200">{{ getStat('spd', charLevel) }}</td>
+              </tr>
+              <tr class="border-b border-slate-700">
+                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">Aggro</th>
+                <td class="p-4 font-medium text-slate-200">{{ getStat('taunt', charLevel) }}</td>
+              </tr>
+
               <tr class="border-b border-slate-700">
                 <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">Rarity</th>
                 <td class="p-4 text-yellow-400 text-lg tracking-widest">{{ '★'.repeat(character.rarity) }}</td>
@@ -59,20 +169,15 @@ const rightAbilities = computed(() => {
                   {{ character.element === 'Thunder' ? 'Lightning' : character.element }}
                 </td>
               </tr>
-              <tr class="border-b border-slate-700">
+              <tr>
                 <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">Path</th>
                 <td class="p-4 flex items-center gap-2 font-medium">
                   <NuxtImg :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(character.path)}.png`" class="w-5 h-5 opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
                   {{ getOfficialPath(character.path) }}
                 </td>
               </tr>
-              <tr>
-                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">Faction</th>
-                <td class="p-4 text-slate-300 italic">Data pending parser update</td>
-              </tr>
             </tbody>
           </table>
-
           <div class="p-6 bg-slate-800/50 rounded-xl border border-slate-700 text-slate-300 leading-relaxed shadow-inner">
             <p v-html="parseHoyoMarkup(character.desc)"></p>
           </div>
@@ -98,36 +203,19 @@ const rightAbilities = computed(() => {
                v-html="parseHoyoMarkup(skill.desc, skill.params[(skillLevels[skill.id] || 1) - 1])">
             </p>
             
-            <div v-if="skill.params && skill.params.length > 1" class="mt-4 flex items-center gap-3 select-none">
+            <div v-if="skill.params && skill.params.length > 1" class="mt-4 mb-6 flex items-center gap-4 select-none">
                <span class="text-xs font-bold text-slate-500">Lv.1</span>
 
                <input 
                  type="range" min="1" :max="skill.params.length" step="1" 
                  v-model.number="skillLevels[skill.id]"
-                 class="flex-1 h-1 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
+                 class="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
                />
 
                <span class="text-xs font-bold text-teal-400 whitespace-nowrap">
                   Lv. {{ skillLevels[skill.id] || 1 }} <span class="text-slate-500">/ {{ skill.params.length }}</span>
                </span>
             </div>
-            
-            <table class="w-full border-collapse border border-slate-600 text-xs text-center">
-              <tbody>
-                <tr class="border-b border-slate-600">
-                  <th class="p-2 bg-slate-700/50 text-slate-300 w-1/2 border-r border-slate-600">Energy Regeneration</th>
-                  <td class="p-2 text-slate-100 font-mono">20</td>
-                </tr>
-                <tr class="border-b border-slate-600">
-                  <th class="p-2 bg-slate-700/50 text-slate-300 border-r border-slate-600">Weakness Break</th>
-                  <td class="p-2 text-slate-100 font-mono">Single Target: 10</td>
-                </tr>
-                <tr>
-                  <th class="p-2 bg-slate-700/50 text-slate-300 border-r border-slate-600">Skill Points</th>
-                  <td class="p-2 text-teal-400 font-mono font-bold">+1</td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
 
@@ -146,13 +234,13 @@ const rightAbilities = computed(() => {
                v-html="parseHoyoMarkup(skill.desc, skill.params[(skillLevels[skill.id] || 1) - 1])">
             </p>
             
-            <div v-if="skill.params && skill.params.length > 1" class="mt-4 flex items-center gap-3 select-none">
+            <div v-if="skill.params && skill.params.length > 1" class="mt-4 mb-6 flex items-center gap-4 select-none">
                <span class="text-xs font-bold text-slate-500">Lv.1</span>
 
                <input 
                  type="range" min="1" :max="skill.params.length" step="1" 
                  v-model.number="skillLevels[skill.id]"
-                 class="flex-1 h-1 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
+                 class="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
                />
 
                <span class="text-xs font-bold text-teal-400 whitespace-nowrap">
