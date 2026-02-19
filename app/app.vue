@@ -1,6 +1,6 @@
 <script setup>
 // The Master Switch: Change this to 'true' to lock down the website!
-const isMaintenanceMode = true 
+const isMaintenanceMode = false 
 </script>
 
 <template>
