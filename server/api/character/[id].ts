@@ -30,57 +30,60 @@ export default defineEventHandler(async (event) => {
     if (charDesc) {
       character.description = String((charDesc as any).desc).replace(/\{NICKNAME\}/g, 'Trailblazer')
     }
-    if (character.skills) {
-      character.kit = character.skills.map((skillId: string) => skillsData[skillId])
-    }
-    if (character.ranks) {
-      character.eidolons = character.ranks.map((rankId: string) => ranksData[rankId])
-    }
-
-    // --- NEW: Process Memosprite (Servant) via Skill Trees ---
+    // --- NEW: Unified Kit & Memosprite Extraction ---
+    const mainKitTypes = ['Basic ATK', 'Skill', 'Ultimate', 'Talent', 'Technique'];
+    const mainKitSkills: any[] = [];
     const memospriteSkills: any[] = [];
+    const allPossibleSkillIds = new Set<string>();
 
-    // Memosprite skills are hidden inside the skill tree's level_up_skills array.
-    // Because Hoyoverse hides these nodes from the main list, we must search the ENTIRE tree database!
+    // 1. Gather EVERY single skill ID attached to this character from ALL sources
+    if (character.skills) {
+      character.skills.forEach((id: string) => allPossibleSkillIds.add(String(id)));
+    }
+    if (character.skill_trees) {
+      character.skill_trees.forEach((treeId: string) => {
+        const node = treesData[treeId];
+        if (node?.level_up_skills) {
+          node.level_up_skills.forEach((lvl: any) => allPossibleSkillIds.add(String(lvl.id)));
+        }
+      });
+    }
     Object.values(treesData).forEach((node: any) => {
-      // Check if this tree node ID starts with our character's ID (e.g., 1413301 starts with 1413)
       if (String(node.id).startsWith(id)) {
-        if (node.level_up_skills && node.level_up_skills.length > 0) {
-          node.level_up_skills.forEach((lvlUpSkill: any) => {
-            const skillId = String(lvlUpSkill.id);
-            
-            // If the skill is NOT in the main character kit, it belongs to the Memosprite!
-            if (character.skills && !character.skills.includes(skillId)) {
-              const skillNode = skillsData[skillId];
-              
-              // Prevent duplicates
-              if (skillNode && !memospriteSkills.find((s: any) => s.id === skillNode.id)) {
-                const levelOne = skillNode.levels ? skillNode.levels[0] : null;
-                memospriteSkills.push({
-                  id: skillNode.id,
-                  name: skillNode.name,
-                  desc: levelOne?.desc || skillNode.desc,
-                  icon: skillNode.icon,
-                  type_text: skillNode.type_text || 'Memosprite Skill', 
-                  effect_text: skillNode.effect_text, 
-                  params: (skillNode.params || levelOne?.params || []).flat()
-                });
-              }
-            }
-          });
+        if (node?.level_up_skills) {
+          node.level_up_skills.forEach((lvl: any) => allPossibleSkillIds.add(String(lvl.id)));
         }
       }
     });
 
-    // Construct the servant object for the UI
+    // 2. Filter and separate them into Main Kit vs Memosprite
+    allPossibleSkillIds.forEach(skillId => {
+      const skillNode = skillsData[skillId];
+      if (skillNode) {
+        if (mainKitTypes.includes(skillNode.type_text)) {
+          // It's a normal ability
+          if (!mainKitSkills.find(s => s.id === skillNode.id)) {
+             mainKitSkills.push(skillNode); 
+          }
+        } else {
+          // If it isn't one of the 5 main types, it's a Memosprite ability!
+          if (!memospriteSkills.find(s => s.id === skillNode.id)) {
+             if (!skillNode.type_text) skillNode.type_text = 'Memosprite Skill';
+             memospriteSkills.push(skillNode); 
+          }
+        }
+      }
+    });
+
+    character.kit = mainKitSkills;
+
+    // 3. Construct the servant object
     if (memospriteSkills.length > 0) {
       let memospriteName = "Memosprite";
-      
-      // Intelligently extract the Memosprite's name from the Talent description
-      const talentNode = character.kit?.find((s: any) => s.type_text === 'Talent');
+      const talentNode = character.kit.find((s: any) => s.type_text === 'Talent');
       if (talentNode && talentNode.desc) {
-         // Added 'i' for case-insensitivity just in case Hoyoverse capitalizes it!
-         const match = talentNode.desc.match(/memosprite\s+([A-Z][a-zA-Z]+)/i);
+         // This regex safely extracts the name even if Hoyoverse adds <color> tags!
+         const match = talentNode.desc.match(/memosprite\s+(?:<[^>]+>)?([A-Z][a-zA-Z]+)/i);
          if (match && match[1]) memospriteName = match[1];
       }
 
@@ -91,7 +94,11 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // 2. Attach the ascension scaling data to the character!
+    // 4. Attach Eidolons
+    if (character.ranks) {
+      character.eidolons = character.ranks.map((rankId: string) => ranksData[rankId])
+    }
+    
     if (promosData) {
       // Find the character's promotion data. We check the exact ID, and fallback to searching the array
       const charPromos = promosData[id] || Object.values(promosData).find((p: any) => p[0]?.id?.toString().startsWith(id))
