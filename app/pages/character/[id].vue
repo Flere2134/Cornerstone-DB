@@ -121,6 +121,20 @@ const rightAbilities = computed(() => {
       return typeDiff === 0 ? String(a.id).localeCompare(String(b.id)) : typeDiff
     })
 })
+// --- MEMOSPRITE SORTING ---
+const memospriteLeftAbilities = computed(() => {
+  if (!character.value?.servant?.skills) return []
+  return character.value.servant.skills
+    .filter(s => s.type_text === 'Memosprite Skill')
+    .sort((a, b) => String(a.id).localeCompare(String(b.id)))
+})
+
+const memospriteRightAbilities = computed(() => {
+  if (!character.value?.servant?.skills) return []
+  return character.value.servant.skills
+    .filter(s => s.type_text === 'Memosprite Talent')
+    .sort((a, b) => String(a.id).localeCompare(String(b.id)))
+})
 </script>
 
 <template>
@@ -315,50 +329,96 @@ const rightAbilities = computed(() => {
           <h3 class="mt-5 text-2xl font-bold text-white-400 tracking-wide">{{ character.servant.name }}</h3>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div 
-            v-for="skill in character.servant.skills" 
-            :key="skill.id"
-            class="bg-slate-800/80 rounded-2xl p-6 border border-slate-700 relative overflow-hidden"
-          >
-            <div class="absolute inset-0 group-hover:opacity-100 transition-opacity"></div>
-            
-            <div class="relative z-10">
-              <div class="flex items-center gap-4 mb-4">
-                <NuxtImg 
-                  v-if="skill.icon" 
-                  :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" 
-                  class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" 
-                  :alt="skill.name"
-                />
-                <div>
-                  <span class="text-xs font-bold uppercase tracking-wider text-teal-400 mb-1 block">{{ skill.type_text }}</span>
-                  <div class="flex items-center gap-3 flex-wrap">
-                    <h3 class="text-xl font-bold text-white group-hover:text-teal-200 transition-colors">{{ skill.name }}</h3>
-                    <span 
-                      v-if="skill.effect_text" 
-                      class="text-[0.65rem] bg-slate-700 px-2 py-0.5 rounded text-slate-300 font-semibold border border-slate-600 uppercase tracking-wider"
-                    >
-                      {{ skill.effect_text }}
-                    </span>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          
+          <div class="space-y-8">
+            <div 
+              v-for="skill in memospriteLeftAbilities" 
+              :key="skill.id"
+              class="bg-slate-800/80 rounded-2xl p-6 border border-slate-700 relative overflow-hidden"
+            >
+              <div class="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div class="relative z-10">
+                <div class="flex items-center gap-4 mb-4">
+                  <NuxtImg 
+                    v-if="skill.icon" 
+                    :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" 
+                    class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" 
+                    :alt="skill.name"
+                  />
+                  <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-teal-400 mb-1 block">{{ skill.type_text }}</span>
+                    <div class="flex items-center gap-3 flex-wrap">
+                      <h3 class="text-xl font-bold text-white group-hover:text-teal-200 transition-colors">{{ skill.name }}</h3>
+                      <span 
+                        v-if="skill.effect_text" 
+                        class="text-[0.65rem] bg-slate-700 px-2 py-0.5 rounded text-slate-300 font-semibold border border-slate-600 uppercase tracking-wider"
+                      >
+                        {{ skill.effect_text }}
+                      </span>
+                    </div>
                   </div>
                 </div>
+                <p class="text-sm text-slate-300 leading-relaxed mb-6 min-h-[60px]" 
+                   v-html="parseHoyoMarkup(skill.desc, skill.params[(skillLevels[skill.id] || 1) - 1] || skill.params)">
+                </p>
+                <div v-if="skill.params && skill.params.length > 1" class="mt-2 flex items-center gap-4 select-none">
+                   <span class="text-xs font-bold text-slate-500">Lv.1</span>
+                   <input 
+                     type="range" min="1" :max="skill.params.length" step="1" 
+                     v-model.number="skillLevels[skill.id]"
+                     class="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
+                   />
+                   <span class="text-xs font-bold text-teal-400 whitespace-nowrap">
+                      Lv. {{ skillLevels[skill.id] || 1 }} <span class="text-slate-500">/ {{ skill.params.length }}</span>
+                   </span>
+                </div>
               </div>
+            </div>
+          </div>
 
-              <p class="text-sm text-slate-300 leading-relaxed mb-6 min-h-[60px]" 
-                 v-html="parseHoyoMarkup(skill.desc, skill.params[(skillLevels[skill.id] || 1) - 1] || skill.params)">
-              </p>
-
-              <div v-if="skill.params && skill.params.length > 1" class="mt-2 flex items-center gap-4 select-none">
-                 <span class="text-xs font-bold text-slate-500">Lv.1</span>
-                 <input 
-                   type="range" min="1" :max="skill.params.length" step="1" 
-                   v-model.number="skillLevels[skill.id]"
-                   class="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
-                 />
-                 <span class="text-xs font-bold text-teal-400 whitespace-nowrap">
-                    Lv. {{ skillLevels[skill.id] || 1 }} <span class="text-slate-500">/ {{ skill.params.length }}</span>
-                 </span>
+          <div class="space-y-8">
+            <div 
+              v-for="skill in memospriteRightAbilities" 
+              :key="skill.id"
+              class="bg-slate-800/80 rounded-2xl p-6 border border-slate-700 relative overflow-hidden"
+            >
+              <div class="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div class="relative z-10">
+                <div class="flex items-center gap-4 mb-4">
+                  <NuxtImg 
+                    v-if="skill.icon" 
+                    :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" 
+                    class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" 
+                    :alt="skill.name"
+                  />
+                  <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-teal-400 mb-1 block">{{ skill.type_text }}</span>
+                    <div class="flex items-center gap-3 flex-wrap">
+                      <h3 class="text-xl font-bold text-white group-hover:text-teal-200 transition-colors">{{ skill.name }}</h3>
+                      <span 
+                        v-if="skill.effect_text" 
+                        class="text-[0.65rem] bg-slate-700 px-2 py-0.5 rounded text-slate-300 font-semibold border border-slate-600 uppercase tracking-wider"
+                      >
+                        {{ skill.effect_text }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-sm text-slate-300 leading-relaxed mb-6 min-h-[60px]" 
+                   v-html="parseHoyoMarkup(skill.desc, skill.params[(skillLevels[skill.id] || 1) - 1] || skill.params)">
+                </p>
+                <div v-if="skill.params && skill.params.length > 1" class="mt-2 flex items-center gap-4 select-none">
+                   <span class="text-xs font-bold text-slate-500">Lv.1</span>
+                   <input 
+                     type="range" min="1" :max="skill.params.length" step="1" 
+                     v-model.number="skillLevels[skill.id]"
+                     class="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
+                   />
+                   <span class="text-xs font-bold text-teal-400 whitespace-nowrap">
+                      Lv. {{ skillLevels[skill.id] || 1 }} <span class="text-slate-500">/ {{ skill.params.length }}</span>
+                   </span>
+                </div>
               </div>
             </div>
           </div>
