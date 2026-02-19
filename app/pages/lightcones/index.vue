@@ -9,7 +9,7 @@ const searchQuery = ref('')
 const selectedRarity = ref(null) 
 const selectedPath = ref(null)   
 
-const availablePaths = ['Warrior', 'Rogue', 'Mage', 'Shaman', 'Warlock', 'Knight', 'Priest']
+const availablePaths = ['Warrior', 'Rogue', 'Mage', 'Shaman', 'Warlock', 'Knight', 'Priest', 'Memory', 'Joy']
 
 // --- FILTER LOGIC ---
 const filteredLightcones = computed(() => {

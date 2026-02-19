@@ -92,14 +92,33 @@ const getStat = (statName, level) => {
   
   return Math.round(base + (level - 1) * step)
 }
+
+// --- SORTING HIERARCHY ---
+const leftOrder = ['Basic ATK', 'Ultimate', 'Technique']
+const rightOrder = ['Skill', 'Talent']
+
 const leftAbilities = computed(() => {
   if (!character.value?.kit) return []
-  return character.value.kit.filter(s => ['Basic ATK', 'Ultimate', 'Technique'].includes(s.type_text))
+  
+  return character.value.kit
+    .filter(s => leftOrder.includes(s.type_text))
+    .sort((a, b) => {
+      // Sorts by our predefined hierarchy so duplicate types stick together
+      const typeDiff = leftOrder.indexOf(a.type_text) - leftOrder.indexOf(b.type_text)
+      // If they are the exact same type, sort them by their internal ID to keep them predictable
+      return typeDiff === 0 ? String(a.id).localeCompare(String(b.id)) : typeDiff
+    })
 })
 
 const rightAbilities = computed(() => {
   if (!character.value?.kit) return []
-  return character.value.kit.filter(s => ['Skill', 'Talent'].includes(s.type_text))
+  
+  return character.value.kit
+    .filter(s => rightOrder.includes(s.type_text))
+    .sort((a, b) => {
+      const typeDiff = rightOrder.indexOf(a.type_text) - rightOrder.indexOf(b.type_text)
+      return typeDiff === 0 ? String(a.id).localeCompare(String(b.id)) : typeDiff
+    })
 })
 </script>
 

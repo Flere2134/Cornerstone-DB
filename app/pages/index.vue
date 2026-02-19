@@ -9,7 +9,7 @@ const selectedRarity = ref(null)
 const selectedPath = ref(null)   
 const selectedElement = ref(null) // Added Element State
 
-const availablePaths = ['Warrior', 'Rogue', 'Mage', 'Shaman', 'Warlock', 'Knight', 'Priest']
+const availablePaths = ['Warrior', 'Rogue', 'Mage', 'Shaman', 'Warlock', 'Knight', 'Priest', 'Memory', 'Joy']
 
 // The internal Hoyoverse codenames for the 7 elements
 const availableElements = ['Fire', 'Ice', 'Wind', 'Thunder', 'Physical', 'Quantum', 'Imaginary']
