@@ -159,8 +159,14 @@ const rightAbilities = computed(() => {
               </tr>
 
               <tr class="border-b border-slate-700">
-                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">Rarity</th>
-                <td class="p-4 text-yellow-400 text-lg tracking-widest">{{ '★'.repeat(character.rarity) }}</td>
+                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold align-middle">Rarity</th>
+                <td class="p-4">
+                  <NuxtImg 
+                    :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/deco/Star${character.rarity}.png`" 
+                    class="h-6 w-auto object-contain drop-shadow-md" 
+                    alt="Rarity Stars" 
+                  />
+                </td>
               </tr>
               <tr class="border-b border-slate-700">
                 <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">Element</th>

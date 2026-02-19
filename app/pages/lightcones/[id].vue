@@ -100,7 +100,11 @@ const getStat = (statName, level) => {
         <div>
           <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">{{ lc.name }}</h1>
           <div class="flex items-center flex-wrap gap-4">
-            <span class="text-yellow-400 text-2xl tracking-widest">{{ '★'.repeat(lc.rarity) }}</span>
+            <NuxtImg 
+              :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/deco/Star${lc.rarity}.png`" 
+              class="h-7 w-auto object-contain drop-shadow-[0_2px_10px_rgba(251,191,36,0.3)]" 
+              alt="Rarity Stars" 
+            />
             
             <div class="flex items-center gap-2 bg-slate-800/80 pl-2 pr-4 py-1 rounded-full border border-slate-700/50">
               <NuxtImg :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(lc.path)}.png`" class="w-6 h-6 opacity-90" />
