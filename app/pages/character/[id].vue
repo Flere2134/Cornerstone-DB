@@ -132,7 +132,7 @@ const rightAbilities = computed(() => {
                   <input 
                     type="range" min="1" max="80" step="1" 
                     v-model.number="charLevel"
-                    class="w-full h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500/30" 
+                    class="w-full h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600 focus:outline-none" 
                   />
                 </td>
               </tr>
