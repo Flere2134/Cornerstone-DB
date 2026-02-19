@@ -52,6 +52,7 @@ export default defineEventHandler(async (event) => {
 
       const statTypeMap: Record<string, { name: string, isPercent: boolean }> = {
         'DefenseAddedRatio': { name: 'DEF', isPercent: true },
+        'DefenceAddedRatio': { name: 'DEF', isPercent: true }, // Added alternate spelling
         'AttackAddedRatio': { name: 'ATK', isPercent: true },
         'HPAddedRatio': { name: 'Max HP', isPercent: true },
         'CriticalChanceBase': { name: 'CRIT Rate', isPercent: true },
@@ -66,8 +67,10 @@ export default defineEventHandler(async (event) => {
         'WindAddedRatio': { name: 'Wind DMG Boost', isPercent: true },
         'QuantumAddedRatio': { name: 'Quantum DMG Boost', isPercent: true },
         'ImaginaryAddedRatio': { name: 'Imaginary DMG Boost', isPercent: true },
+        'ElationDamageAddedRatioBase': { name: 'Elation DMG Boost', isPercent: true }, // Added Elation Element
         'BreakDamageAddedRatioBase': { name: 'Break Effect', isPercent: true },
         'HealRatioBase': { name: 'Outgoing Healing Boost', isPercent: true },
+        'SPRatioBase': { name: 'Energy Regeneration Rate', isPercent: true },
       }
 
       character.skill_trees.forEach((treeId: string) => {
