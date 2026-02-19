@@ -81,7 +81,8 @@ export default defineEventHandler(async (event) => {
             id: node.id,
             name: node.name,
             desc: node.desc,
-            icon: node.icon
+            icon: node.icon,
+            params: (node.params || node.levels?.[0]?.params || []).flat()
           })
         }
 

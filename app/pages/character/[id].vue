@@ -274,7 +274,7 @@ const rightAbilities = computed(() => {
             />
             <div>
               <h3 class="font-bold text-lg text-amber-400 mb-2">{{ index + 1 }}. {{ ability.name }}</h3>
-              <p class="text-sm text-slate-300 leading-relaxed" v-html="parseHoyoMarkup(ability.desc)"></p>
+              <p class="text-sm text-slate-300 leading-relaxed" v-html="parseHoyoMarkup(ability.desc, ability.params)"></p>
             </div>
           </div>
         </div>
@@ -317,12 +317,10 @@ const rightAbilities = computed(() => {
             <h3 class="text-lg font-bold text-white mb-2 leading-tight">
               <span class="text-teal-400 mr-2">{{ index + 1 }}.</span>{{ eidolon.name }}
             </h3>
-            <p class="text-sm text-slate-300 leading-relaxed" v-html="parseHoyoMarkup(eidolon.desc)"></p>
+            <p class="text-sm text-slate-300 leading-relaxed" v-html="parseHoyoMarkup(eidolon.desc, (eidolon.params || []).flat())"></p>
           </div>
         </div>
-
       </div>
-
     </div>
   </div>
 </template>
