@@ -14,6 +14,11 @@ watch(character, (newChar) => {
       skillLevels[skill.id] = 1 
     })
   }
+  if (newChar && newChar.servant && newChar.servant.skills) {
+    newChar.servant.skills.forEach(skill => {
+      skillLevels[skill.id] = 1 
+    })
+  }
 }, { immediate: true })
 
 // Determine which Ascension bracket the character is in
@@ -27,10 +32,6 @@ const getAscensionIndex = (level) => {
   return 6
 }
 
-// Automatically calculate the precise stat based on their current level
-// Automatically calculate the precise stat based on their current level
-// Automatically calculate the precise stat based on their current level
-// Automatically calculate the precise stat based on their current level
 const getStat = (statName, level) => {
   if (!character.value?.promotions) return '---'
   
@@ -344,7 +345,21 @@ const rightAbilities = computed(() => {
                     {{ skill.effect_text }}
                   </span>
                 </div>
-                <p class="text-sm text-slate-300 leading-relaxed" v-html="parseHoyoMarkup(skill.desc, skill.params)"></p>
+                <p class="text-sm text-slate-300 leading-relaxed mb-4 min-h-[60px]" 
+                   v-html="parseHoyoMarkup(skill.desc, skill.params[(skillLevels[skill.id] || 1) - 1] || skill.params)">
+                </p>
+
+                <div v-if="skill.params && skill.params.length > 1" class="mt-2 flex items-center gap-4 select-none">
+                   <span class="text-xs font-bold text-slate-500">Lv.1</span>
+                   <input 
+                     type="range" min="1" :max="skill.params.length" step="1" 
+                     v-model.number="skillLevels[skill.id]"
+                     class="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-400 transition-all hover:bg-slate-600"
+                   />
+                   <span class="text-xs font-bold text-teal-400 whitespace-nowrap">
+                      Lv. {{ skillLevels[skill.id] || 1 }} <span class="text-slate-500">/ {{ skill.params.length }}</span>
+                   </span>
+                </div>
               </div>
             </div>
           </div>

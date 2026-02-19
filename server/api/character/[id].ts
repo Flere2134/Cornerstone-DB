@@ -37,41 +37,57 @@ export default defineEventHandler(async (event) => {
       character.eidolons = character.ranks.map((rankId: string) => ranksData[rankId])
     }
 
-    // --- NEW: Process Memosprite (Servant) ---
-    if (character.servant) {
-      const servantRaw = character.servant;
-      const servantSkills: any[] = [];
+    // --- NEW: Process Memosprite (Servant) via Skill Trees ---
+    const memospriteSkills: any[] = [];
 
-      // The 'skills' array typically contains IDs pointing to the skills.json file
-      if (servantRaw.skills && Array.isArray(servantRaw.skills)) {
-        for (const skillId of servantRaw.skills) {
-          // Use skillsData to find the raw skill data
-          const skillNode = skillsData[skillId];
-          if (skillNode) {
-            // Use Level 1 data for the base description and parameters
-            const levelOne = skillNode.levels ? skillNode.levels[0] : null;
+    // Memosprite skills are hidden inside the skill tree's level_up_skills array.
+    // Because Hoyoverse hides these nodes from the main list, we must search the ENTIRE tree database!
+    Object.values(treesData).forEach((node: any) => {
+      // Check if this tree node ID starts with our character's ID (e.g., 1413301 starts with 1413)
+      if (String(node.id).startsWith(id)) {
+        if (node.level_up_skills && node.level_up_skills.length > 0) {
+          node.level_up_skills.forEach((lvlUpSkill: any) => {
+            const skillId = String(lvlUpSkill.id);
             
-            servantSkills.push({
-              id: skillNode.id,
-              name: skillNode.name,
-              // Use level description if available, otherwise fallback to the root description
-              desc: levelOne?.desc || skillNode.desc,
-              icon: skillNode.icon,
-              type_text: skillNode.type_text, 
-              effect_text: skillNode.effect_text, 
-              // Get parameters and flatten any 2D arrays
-              params: (skillNode.params || levelOne?.params || []).flat()
-            });
-          }
+            // If the skill is NOT in the main character kit, it belongs to the Memosprite!
+            if (character.skills && !character.skills.includes(skillId)) {
+              const skillNode = skillsData[skillId];
+              
+              // Prevent duplicates
+              if (skillNode && !memospriteSkills.find((s: any) => s.id === skillNode.id)) {
+                const levelOne = skillNode.levels ? skillNode.levels[0] : null;
+                memospriteSkills.push({
+                  id: skillNode.id,
+                  name: skillNode.name,
+                  desc: levelOne?.desc || skillNode.desc,
+                  icon: skillNode.icon,
+                  type_text: skillNode.type_text || 'Memosprite Skill', 
+                  effect_text: skillNode.effect_text, 
+                  params: (skillNode.params || levelOne?.params || []).flat()
+                });
+              }
+            }
+          });
         }
       }
+    });
 
-      // Overwrite the raw servant object with our clean formatted one
+    // Construct the servant object for the UI
+    if (memospriteSkills.length > 0) {
+      let memospriteName = "Memosprite";
+      
+      // Intelligently extract the Memosprite's name from the Talent description
+      const talentNode = character.kit?.find((s: any) => s.type_text === 'Talent');
+      if (talentNode && talentNode.desc) {
+         // Added 'i' for case-insensitivity just in case Hoyoverse capitalizes it!
+         const match = talentNode.desc.match(/memosprite\s+([A-Z][a-zA-Z]+)/i);
+         if (match && match[1]) memospriteName = match[1];
+      }
+
       character.servant = {
-        id: servantRaw.id,
-        name: servantRaw.name,
-        icon: servantRaw.icon,
-        skills: servantSkills
+        name: memospriteName,
+        icon: memospriteSkills[0]?.icon || character.icon,
+        skills: memospriteSkills
       };
     }
 
