@@ -76,101 +76,106 @@ const getStat = (statName, level) => {
 </script>
 
 <template>
-  <div class="p-8 max-w-6xl mx-auto min-h-screen pb-20">
+  <div class="p-8 max-w-7xl mx-auto min-h-screen pb-20">
     
-    <NuxtLink to="/lightcones" class="text-amber-400 hover:text-amber-300 mb-8 inline-block font-semibold transition-colors">
-      &larr; Back to Lightcones
+    <NuxtLink to="/lightcones" class="group flex items-center gap-2 text-slate-400 hover:text-amber-400 mb-8 font-semibold transition-colors w-fit">
+      <span class="group-hover:-translate-x-1 transition-transform"> &larr;</span> Back to Lightcones
     </NuxtLink>
 
-    <div v-if="pending" class="text-xl animate-pulse mt-10">Loading Database...</div>
-    <div v-else-if="error" class="text-red-400 mt-10">Error loading lightcone data.</div>
+    <div v-if="pending" class="text-xl animate-pulse mt-10 text-slate-300">Loading Lightcone Data...</div>
+    <div v-else-if="error" class="text-red-400 mt-10 bg-red-500/10 p-4 rounded-lg border border-red-500/20">Error loading data. Please try again later.</div>
 
-    <div v-else-if="lc" class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div v-else-if="lc" class="grid grid-cols-1 lg:grid-cols-3 gap-12">
       
-      <div class="col-span-1 flex flex-col items-center bg-slate-800 p-6 rounded-3xl border border-slate-700 h-fit shadow-xl">
-          <NuxtImg
-            :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${lc.portrait || lc.preview}`"
-            class="w-full object-contain mb-6 drop-shadow-2xl"
-            alt="Lightcone Portrait"
-          />
-          <h1 class="text-3xl font-bold mb-4 text-center text-slate-100">{{ lc.name }}</h1>
-          
-          <div class="flex space-x-2 text-sm font-semibold mb-8">
-            <span :class="[
-              'px-3 py-1 rounded-full',
-              lc.rarity == 5 ? 'bg-yellow-500/20 text-yellow-300' : lc.rarity == 4 ? 'bg-purple-500/20 text-purple-300' : 'bg-blue-500/20 text-blue-300'
-            ]">
-              {{ lc.rarity }}-Star
-            </span>
-            <span class="bg-teal-500/20 text-teal-300 px-3 py-1 rounded-full border border-teal-500/30">
-              {{ getOfficialPath(lc.path) }}
-            </span>
-          </div>
+      <div class="col-span-1 flex items-start justify-center lg:sticky lg:top-8 h-fit">
+        <NuxtImg
+          :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${lc.portrait || lc.preview}`"
+          class="w-full max-w-md object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] rounded-xl"
+          alt="Lightcone Portrait"
+        />
+      </div>
 
-          <table class="w-full border-collapse border border-slate-700 text-left text-sm bg-slate-800/30 rounded-lg overflow-hidden shadow-lg shadow-black/20">
+      <div class="col-span-1 lg:col-span-2 space-y-10">
+        
+        <div>
+          <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">{{ lc.name }}</h1>
+          <div class="flex items-center flex-wrap gap-4">
+            <span class="text-yellow-400 text-2xl tracking-widest">{{ '★'.repeat(lc.rarity) }}</span>
+            
+            <div class="flex items-center gap-2 bg-slate-800/80 pl-2 pr-4 py-1 rounded-full border border-slate-700/50">
+              <NuxtImg :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(lc.path)}.png`" class="w-6 h-6 opacity-90" />
+              <span class="text-slate-300 font-medium">{{ getOfficialPath(lc.path) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden">
+          <table class="w-full border-collapse text-left text-sm">
             <tbody>
-              <tr class="border-b border-slate-700">
-                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold align-middle w-1/3">
-                  Level <span class="text-amber-400 font-bold ml-1">{{ lcLevel }}</span>
+              <tr class="border-b border-slate-700/50 bg-slate-800/50">
+                <th class="p-4 text-slate-400 font-semibold align-middle w-1/4 whitespace-nowrap">
+                  Level <span class="text-amber-400 font-bold ml-2 text-base">{{ lcLevel }}</span>
                 </th>
-                <td class="p-4">
-                  <input 
-                    type="range" min="1" max="80" step="1" 
-                    v-model.number="lcLevel"
-                    class="w-full h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-amber-400 transition-all hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-amber-500/30" 
-                  />
+                <td class="p-4 w-3/4">
+                   <div class="flex items-center gap-4 select-none">
+                    <span class="text-xs font-bold text-slate-500">1</span>
+                    <input 
+                      type="range" min="1" max="80" step="1" 
+                      v-model.number="lcLevel"
+                      class="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer transition-all hover:bg-slate-600 focus:outline-none" 
+                    />
+                    <span class="text-xs font-bold text-slate-500">80</span>
+                  </div>
                 </td>
               </tr>
-              <tr class="border-b border-slate-700">
-                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">HP</th>
-                <td class="p-4 font-medium text-slate-200">{{ getStat('hp', lcLevel) }}</td>
+              <tr class="border-b border-slate-700/50">
+                <th class="p-4 text-slate-400 font-semibold">HP</th>
+                <td class="p-4 font-mono text-lg text-slate-200">{{ getStat('hp', lcLevel) }}</td>
               </tr>
-              <tr class="border-b border-slate-700">
-                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">ATK</th>
-                <td class="p-4 font-medium text-slate-200">{{ getStat('atk', lcLevel) }}</td>
+              <tr class="border-b border-slate-700/50">
+                <th class="p-4 text-slate-400 font-semibold">ATK</th>
+                <td class="p-4 font-mono text-lg text-slate-200">{{ getStat('atk', lcLevel) }}</td>
               </tr>
               <tr>
-                <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">DEF</th>
-                <td class="p-4 font-medium text-slate-200">{{ getStat('def', lcLevel) }}</td>
+                <th class="p-4 text-slate-400 font-semibold">DEF</th>
+                <td class="p-4 font-mono text-lg text-slate-200">{{ getStat('def', lcLevel) }}</td>
               </tr>
             </tbody>
           </table>
-          
-      </div>
+        </div>
 
-      <div class="col-span-1 lg:col-span-2 space-y-6">
-        
-        <h2 class="text-2xl font-bold border-b border-slate-700 pb-2 mb-6">Lightcone Ability</h2>
-        
-        <div v-if="lc.skill" class="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-lg transition-all">
-          <div class="flex justify-between items-start mb-4">
-            <h3 class="text-2xl font-bold text-amber-400">{{ lc.skill.name }}</h3>
+        <div v-if="lc.skill" class="bg-slate-800/80 p-6 lg:p-8 rounded-2xl border border-slate-700 shadow-lg">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-slate-700/50 pb-4">
+            <div>
+              <h3 class="text-2xl font-bold text-white leading-tight">{{ lc.skill.name }}</h3>
+            </div>
             
-            <div class="relative">
+            <div class="relative flex-shrink-0">
               <select 
                 v-model.number="currentRank" 
-                class="appearance-none bg-amber-500/20 text-amber-300 font-bold px-4 py-1.5 rounded-md border border-amber-500/30 outline-none cursor-pointer hover:bg-amber-500/30 transition-colors pr-8 text-sm"
+                class="appearance-none bg-amber-500/10 text-amber-400 font-bold pl-4 pr-10 py-2 rounded-lg border border-amber-500/20 outline-none cursor-pointer hover:bg-amber-500/20 transition-colors text-sm focus:ring-2 focus:ring-amber-500/30"
               >
-                <option :value="1" class="bg-slate-800 text-amber-300">Superimposition 1</option>
-                <option :value="2" class="bg-slate-800 text-amber-300">Superimposition 2</option>
-                <option :value="3" class="bg-slate-800 text-amber-300">Superimposition 3</option>
-                <option :value="4" class="bg-slate-800 text-amber-300">Superimposition 4</option>
-                <option :value="5" class="bg-slate-800 text-amber-300">Superimposition 5</option>
+                <option :value="1" class="bg-slate-900 text-amber-400">1</option>
+                <option :value="2" class="bg-slate-900 text-amber-400">2</option>
+                <option :value="3" class="bg-slate-900 text-amber-400">3</option>
+                <option :value="4" class="bg-slate-900 text-amber-400">4</option>
+                <option :value="5" class="bg-slate-900 text-amber-400">5</option>
               </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-amber-300">
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-amber-400">
                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
               </div>
             </div>
           </div>
           
-          <p class="text-slate-300 text-base leading-relaxed" v-html="parseHoyoMarkup(lc.skill.desc, lc.skill.params[currentRank - 1])"></p>
+          <p class="text-slate-300 text-base leading-relaxed min-h-[60px]" v-html="parseHoyoMarkup(lc.skill.desc, lc.skill.params[currentRank - 1])"></p>
         </div>
 
-        <div v-if="lc.desc" class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700/50 italic text-slate-400">
-          <p v-html="parseHoyoMarkup(lc.desc)"></p>
+        <div v-if="lc.desc">
+           <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 italic text-slate-300 leading-relaxed text-sm shadow-inner">
+             <p v-html="parseHoyoMarkup(lc.desc)"></p>
+           </div>
         </div>
 
-      </div>
-    </div>
+      </div> </div>
   </div>
 </template>
