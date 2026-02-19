@@ -106,7 +106,7 @@ const getStat = (statName, level) => {
               alt="Rarity Stars" 
             />
             
-            <div class="flex items-center gap-2 bg-slate-800/80 pl-2 pr-4 py-1 rounded-full border border-slate-700/50">
+            <div class="flex items-center gap-2">
               <NuxtImg :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(lc.path)}.png`" class="w-6 h-6 opacity-90" />
               <span class="text-slate-300 font-medium">{{ getOfficialPath(lc.path) }}</span>
             </div>
@@ -118,7 +118,7 @@ const getStat = (statName, level) => {
             <tbody>
               <tr class="border-b border-slate-700/50 bg-slate-800/50">
                 <th class="p-4 text-slate-400 font-semibold align-middle w-1/4 whitespace-nowrap">
-                  Level <span class="text-amber-400 font-bold ml-2 text-base">{{ lcLevel }}</span>
+                  Level <span class="text-teal-400 font-bold ml-2 text-base">{{ lcLevel }}</span>
                 </th>
                 <td class="p-4 w-3/4">
                    <div class="flex items-center gap-4 select-none">
@@ -157,15 +157,15 @@ const getStat = (statName, level) => {
             <div class="relative flex-shrink-0">
               <select 
                 v-model.number="currentRank" 
-                class="appearance-none bg-amber-500/10 text-amber-400 font-bold pl-4 pr-10 py-2 rounded-lg border border-amber-500/20 outline-none cursor-pointer hover:bg-amber-500/20 transition-colors text-sm focus:ring-2 focus:ring-amber-500/30"
+                class="appearance-none bg-slate-500/10 text-teal-400 font-bold pl-4 pr-10 py-2 rounded-lg border border-slate-500/20 outline-none cursor-pointer hover:bg-white-500/20 transition-colors text-sm"
               >
-                <option :value="1" class="bg-slate-900 text-amber-400">1</option>
-                <option :value="2" class="bg-slate-900 text-amber-400">2</option>
-                <option :value="3" class="bg-slate-900 text-amber-400">3</option>
-                <option :value="4" class="bg-slate-900 text-amber-400">4</option>
-                <option :value="5" class="bg-slate-900 text-amber-400">5</option>
+                <option :value="1" class="bg-slate-900 text-slate-400">1</option>
+                <option :value="2" class="bg-slate-900 text-slate-400">2</option>
+                <option :value="3" class="bg-slate-900 text-slate-400">3</option>
+                <option :value="4" class="bg-slate-900 text-slate-400">4</option>
+                <option :value="5" class="bg-slate-900 text-slate-400">5</option>
               </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-amber-400">
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white-400">
                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
               </div>
             </div>

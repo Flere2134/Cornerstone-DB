@@ -97,7 +97,7 @@ const rightAbilities = computed(() => {
 <template>
   <div class="p-8 max-w-[1400px] mx-auto min-h-screen pb-20">
     
-    <NuxtLink to="/" class="text-teal-400 hover:text-teal-300 mb-8 inline-block font-semibold transition-colors">
+    <NuxtLink to="/" class="text-slate-400 hover:text-amber-400 mb-8 inline-block font-semibold transition-colors">
       &larr; Back to Database
     </NuxtLink>
 
@@ -258,7 +258,7 @@ const rightAbilities = computed(() => {
 
       </div>
 
-      <h2 class="text-3xl font-bold border-b border-slate-700 pb-3 mb-8 text-slate-100">Bonus Abilities & Traces</h2>
+      <h2 class="text-3xl font-bold border-b border-slate-700 pb-3 mb-8 text-slate-100">Bonus Abilities</h2>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
         
         <div class="space-y-4">
@@ -273,14 +273,14 @@ const rightAbilities = computed(() => {
               class="w-12 h-12 bg-slate-900 rounded-full border border-slate-600 flex-shrink-0" 
             />
             <div>
-              <h3 class="font-bold text-lg text-amber-400 mb-2">{{ index + 1 }}. {{ ability.name }}</h3>
+              <h3 class="font-bold text-lg text-white-400 mb-2">{{ index + 1 }}. {{ ability.name }}</h3>
               <p class="text-sm text-slate-300 leading-relaxed" v-html="parseHoyoMarkup(ability.desc, ability.params)"></p>
             </div>
           </div>
         </div>
 
         <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 h-fit">
-          <h3 class="font-bold text-slate-300 mb-4 uppercase tracking-wider text-sm border-b border-slate-700 pb-2">Max Ascension Stats</h3>
+          <h3 class="font-bold text-slate-300 mb-4 uppercase tracking-wider text-sm border-b border-slate-700 pb-2">Traces</h3>
           <ul class="space-y-4">
             <li 
               v-for="stat in character.stat_totals" 
