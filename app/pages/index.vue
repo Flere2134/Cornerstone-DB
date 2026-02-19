@@ -43,7 +43,7 @@ const toggleElement = (element) => {
 </script>
 
 <template>
-  <div class="p-8 max-w-5xl mx-auto pb-20">
+  <div class="p-8 md:p-8 max-w-5xl mx-auto pb-20 md:pb-20">
     
     <div class="mb-10 text-center">
       <h1 class="text-4xl font-bold mb-2 tracking-tight">Characters</h1>

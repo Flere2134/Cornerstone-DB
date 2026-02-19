@@ -113,7 +113,7 @@ const getStat = (statName, level) => {
           </div>
         </div>
 
-        <div class="bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden">
+        <div class="bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-x-auto w-full pb-2">
           <table class="w-full border-collapse text-left text-sm">
             <tbody>
               <tr class="border-b border-slate-700/50 bg-slate-800/50">

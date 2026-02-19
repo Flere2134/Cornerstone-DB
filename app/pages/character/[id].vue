@@ -95,7 +95,7 @@ const rightAbilities = computed(() => {
 </script>
 
 <template>
-  <div class="p-8 max-w-[1400px] mx-auto min-h-screen pb-20">
+  <div class="p-4 md:p-8 max-w-[1400px] mx-auto min-h-screen pb-20 md:pb-20">
     
     <NuxtLink to="/" class="text-slate-400 hover:text-amber-400 mb-8 inline-block font-semibold transition-colors">
       &larr; Back to Database
@@ -116,7 +116,7 @@ const rightAbilities = computed(() => {
           />
         </div>
 
-        <div>
+        <div class="overflow-x-auto w-full pb-2">
           <table class="w-full border-collapse border border-slate-700 text-left text-sm mb-6 bg-slate-800/30 rounded-lg overflow-hidden shadow-lg shadow-black/20">
             <tbody>
               <tr class="border-b border-slate-700">
