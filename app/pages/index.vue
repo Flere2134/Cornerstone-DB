@@ -54,7 +54,7 @@ const handleAventurineGamble = (e, character) => {
     const roll = Math.random()
     
     // 3. The 1% Chance (For testing, change 0.01 to 1.0 so it triggers every time!)
-    if (roll < 1.0) {
+    if (roll < 0.6) { // 60% chance for fun demonstration purposes
       e.preventDefault() // Stops the NuxtLink from instantly changing pages
       isJackpotActive.value = true // Triggers the golden overlay
 
