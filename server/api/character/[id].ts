@@ -37,6 +37,44 @@ export default defineEventHandler(async (event) => {
       character.eidolons = character.ranks.map((rankId: string) => ranksData[rankId])
     }
 
+    // --- NEW: Process Memosprite (Servant) ---
+    if (character.servant) {
+      const servantRaw = character.servant;
+      const servantSkills: any[] = [];
+
+      // The 'skills' array typically contains IDs pointing to the skills.json file
+      if (servantRaw.skills && Array.isArray(servantRaw.skills)) {
+        for (const skillId of servantRaw.skills) {
+          // Use skillsData to find the raw skill data
+          const skillNode = skillsData[skillId];
+          if (skillNode) {
+            // Use Level 1 data for the base description and parameters
+            const levelOne = skillNode.levels ? skillNode.levels[0] : null;
+            
+            servantSkills.push({
+              id: skillNode.id,
+              name: skillNode.name,
+              // Use level description if available, otherwise fallback to the root description
+              desc: levelOne?.desc || skillNode.desc,
+              icon: skillNode.icon,
+              type_text: skillNode.type_text, 
+              effect_text: skillNode.effect_text, 
+              // Get parameters and flatten any 2D arrays
+              params: (skillNode.params || levelOne?.params || []).flat()
+            });
+          }
+        }
+      }
+
+      // Overwrite the raw servant object with our clean formatted one
+      character.servant = {
+        id: servantRaw.id,
+        name: servantRaw.name,
+        icon: servantRaw.icon,
+        skills: servantSkills
+      };
+    }
+
     // 2. Attach the ascension scaling data to the character!
     if (promosData) {
       // Find the character's promotion data. We check the exact ID, and fallback to searching the array

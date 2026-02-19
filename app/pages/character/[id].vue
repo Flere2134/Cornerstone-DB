@@ -297,6 +297,60 @@ const rightAbilities = computed(() => {
 
       </div>
 
+      <div v-if="character.servant" class="mb-12">
+        <h2 class="text-3xl font-bold border-b border-slate-700 pb-3 mb-8 text-slate-100 flex items-center gap-3">
+          Memosprite: {{ character.servant.name }}
+        </h2>
+
+        <div class="flex flex-col items-center justify-center mb-10">
+          <div class="relative w-28 h-28 md:w-36 md:h-36 rounded-full bg-slate-800/50 border-2 border-teal-500/30 p-3 shadow-[0_0_30px_rgba(45,212,191,0.15)]">
+            <div class="absolute inset-0 rounded-full bg-teal-500/10 animate-pulse"></div>
+            <NuxtImg 
+              :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${character.servant.icon}`" 
+              class="w-full h-full object-contain drop-shadow-xl relative z-10"
+              :alt="character.servant.name"
+            />
+          </div>
+          <h3 class="mt-5 text-2xl font-bold text-teal-400 tracking-wide">{{ character.servant.name }}</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div 
+            v-for="skill in character.servant.skills" 
+            :key="skill.id"
+            class="bg-slate-800/80 rounded-2xl p-6 border border-slate-700 relative overflow-hidden group hover:border-teal-500/30 transition-all duration-300 shadow-md"
+          >
+            <div class="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            
+            <div class="relative flex items-start gap-5">
+              <div class="flex-shrink-0 flex flex-col items-center gap-2.5">
+                <div class="p-2.5 bg-slate-900 rounded-full border-2 border-slate-600 shadow-md group-hover:border-teal-500/50 transition-colors">
+                  <NuxtImg 
+                    :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" 
+                    class="w-10 h-10 object-contain"
+                    :alt="skill.name"
+                  />
+                </div>
+                <span class="text-[0.6rem] font-bold text-teal-400 uppercase tracking-widest text-center">{{ skill.type_text }}</span>
+              </div>
+
+              <div class="flex-1 space-y-2.5">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <h3 class="text-lg font-bold text-white group-hover:text-teal-200 transition-colors">{{ skill.name }}</h3>
+                  <span 
+                    v-if="skill.effect_text" 
+                    class="text-[0.65rem] bg-slate-700 px-2 py-0.5 rounded text-slate-300 font-semibold border border-slate-600 uppercase tracking-wider"
+                  >
+                    {{ skill.effect_text }}
+                  </span>
+                </div>
+                <p class="text-sm text-slate-300 leading-relaxed" v-html="parseHoyoMarkup(skill.desc, skill.params)"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <h2 class="text-3xl font-bold border-b border-slate-700 pb-3 mb-8 text-slate-100">Bonus Abilities</h2>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
         
