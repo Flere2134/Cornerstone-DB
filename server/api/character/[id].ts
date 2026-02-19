@@ -80,11 +80,28 @@ export default defineEventHandler(async (event) => {
     // 3. Construct the servant object
     if (memospriteSkills.length > 0) {
       let memospriteName = "Memosprite";
-      const talentNode = character.kit.find((s: any) => s.type_text === 'Talent');
-      if (talentNode && talentNode.desc) {
-         // This regex safely extracts the name even if Hoyoverse adds <color> tags!
-         const match = talentNode.desc.match(/memosprite\s+(?:<[^>]+>)?([A-Z][a-zA-Z]+)/i);
-         if (match && match[1]) memospriteName = match[1];
+      
+      // Strategy A: Check the ENTIRE main kit for the explicit phrase "memosprite [Name]"
+      const mainKitDesc = character.kit.map((s: any) => s.desc).join(' | ');
+      // Looks for "memosprite", ignores HTML tags/punctuation, and captures the next Capitalized word(s)
+      const summonMatch = mainKitDesc.match(/[Mm]emosprite\b[\s,:-]*(?:<[^>]+>[\s,:-]*)*([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?)/);
+      
+      const ignoreWords = ['The', 'A', 'When', 'If', 'While', 'After', 'All', 'Any'];
+      
+      if (summonMatch && summonMatch[1] && !ignoreWords.includes(summonMatch[1].trim())) {
+         memospriteName = summonMatch[1].trim();
+      } else {
+         // Strategy B: Smart-read the Memosprite's own Talent description!
+         const msTalent = memospriteSkills.find((s: any) => s.type_text?.includes('Talent'));
+         if (msTalent && msTalent.desc) {
+            // Strip out starting conditional words (e.g. "When ", "If ", "While ") and HTML tags
+            const cleanDesc = msTalent.desc.replace(/^(?:When|If|While|After|Upon|At|<[^>]+>|\s|,)+/i, '');
+            // Capture the first capitalized word (or pair of words for names like "Little Ica")
+            const nameMatch = cleanDesc.match(/^([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?)/);
+            if (nameMatch && nameMatch[1]) {
+                memospriteName = nameMatch[1].trim();
+            }
+         }
       }
 
       character.servant = {
@@ -98,7 +115,7 @@ export default defineEventHandler(async (event) => {
     if (character.ranks) {
       character.eidolons = character.ranks.map((rankId: string) => ranksData[rankId])
     }
-    
+
     if (promosData) {
       // Find the character's promotion data. We check the exact ID, and fallback to searching the array
       const charPromos = promosData[id] || Object.values(promosData).find((p: any) => p[0]?.id?.toString().startsWith(id))
