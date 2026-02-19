@@ -94,7 +94,12 @@ const togglePath = (path) => {
         v-for="lc in filteredLightcones" 
         :key="lc.id"
         :to="`/lightcones/${lc.id}`" 
-        class="group relative aspect-[9/14] rounded-xl overflow-hidden shadow-md border border-slate-700/50 hover:border-teal-400 hover:shadow-teal-500/30 transition-all duration-300 cursor-pointer"
+        :class="[
+          'group relative aspect-[9/14] rounded-xl overflow-hidden shadow-md border border-slate-700/50 transition-all duration-300 cursor-pointer',
+          lc.rarity === 5 ? 'hover:border-amber-400 hover:shadow-[0_0_15px_-3px_rgba(251,191,36,0.3)]' : 
+          lc.rarity === 4 ? 'hover:border-purple-400 hover:shadow-[0_0_15px_-3px_rgba(192,132,252,0.3)]' : 
+          'hover:border-blue-400 hover:shadow-[0_0_15px_-3px_rgba(96,165,250,0.3)]'
+        ]"
       >
         <NuxtImg
           v-if="lc.preview"
@@ -105,8 +110,22 @@ const togglePath = (path) => {
         />
         <div v-else class="absolute inset-0 bg-slate-800"></div>
 
-        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent group-hover:from-teal-800/90 group-hover:via-teal-700/60 transition-colors duration-300 pt-12 pb-3 px-3 flex flex-col justify-end">
-          <h2 class="text-white font-bold truncate text-center text-sm shadow-sm" :title="lc.name">
+        <div 
+          :class="[
+            'absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent transition-colors duration-300 pt-12 pb-3 px-3 flex flex-col justify-end',
+            lc.rarity === 5 ? 'group-hover:from-amber-700/60 group-hover:via-amber-500/60' : 
+            lc.rarity === 4 ? 'group-hover:from-purple-900/90 group-hover:via-purple-800/60' : 
+            'group-hover:from-blue-900/90 group-hover:via-blue-800/60'
+          ]"
+        >
+          <h2 
+            :class="[
+              'font-bold truncate text-center text-sm shadow-sm transition-colors duration-300',
+              lc.rarity === 5 ? 'text-white group-hover:text-amber-300' : 
+              lc.rarity === 4 ? 'text-white group-hover:text-purple-300' : 
+              'text-white group-hover:text-blue-300'
+            ]"
+          >
             {{ lc.name }}
           </h2>
         </div>

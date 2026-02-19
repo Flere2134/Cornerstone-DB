@@ -144,7 +144,7 @@ const toggleElement = (element) => {
           <h2 
             :class="[
               'font-bold truncate text-center text-sm shadow-sm transition-colors duration-300',
-              character.rarity === 5 ? 'text-white group-hover:text-amber-400' : 'text-white group-hover:text-purple-300'
+              character.rarity === 5 ? 'text-white group-hover:text-amber-300' : 'text-white group-hover:text-purple-300'
             ]"
           >
             {{ getCharacterName(character.name) }}
