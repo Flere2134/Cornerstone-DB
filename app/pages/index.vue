@@ -40,6 +40,32 @@ const togglePath = (path) => {
 const toggleElement = (element) => {
   selectedElement.value = selectedElement.value === element ? null : element
 }
+import { useRouter } from 'vue-router' // Add this to your imports if it isn't there!
+
+const router = useRouter()
+const isJackpotActive = ref(false)
+
+// --- EASTER EGG LOGIC ---
+const handleAventurineGamble = (e, character) => {
+  // 1. Check if the clicked character is Aventurine
+  if (getCharacterName(character.name) === 'Aventurine') {
+    
+    // 2. Roll the dice! (Math.random generates a decimal between 0 and 1)
+    const roll = Math.random()
+    
+    // 3. The 1% Chance (For testing, change 0.01 to 1.0 so it triggers every time!)
+    if (roll < 1.0) {
+      e.preventDefault() // Stops the NuxtLink from instantly changing pages
+      isJackpotActive.value = true // Triggers the golden overlay
+
+      // 4. Wait 2.5 seconds, hide the overlay, and manually navigate
+      setTimeout(() => {
+        isJackpotActive.value = false
+        router.push(`/character/${character.id}`)
+      }, 2500)
+    }
+  }
+}
 </script>
 
 <template>
@@ -117,6 +143,7 @@ const toggleElement = (element) => {
         v-for="character in filteredCharacters" 
         :key="character.id"
         :to="`/character/${character.id}`" 
+        @click="handleAventurineGamble($event, character)"
         :class="[
           'group relative aspect-[9/14] rounded-xl overflow-hidden shadow-md border border-slate-700/50 transition-all duration-300 cursor-pointer',
           character.rarity === 5 
@@ -160,4 +187,17 @@ const toggleElement = (element) => {
     </div>
 
   </div>
+  <div 
+      v-if="isJackpotActive" 
+      class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-md transition-opacity duration-500"
+    >
+      <div class="text-center animate-bounce">
+        <h1 class="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-amber-400 to-amber-600 drop-shadow-[0_0_50px_rgba(251,191,36,0.6)] tracking-widest italic select-none">
+          JACKPOT!
+        </h1>
+        <p class="text-amber-300 mt-6 text-xl md:text-2xl font-bold uppercase tracking-widest animate-pulse select-none">
+          All or nothing!
+        </p>
+      </div>
+    </div>
 </template>
