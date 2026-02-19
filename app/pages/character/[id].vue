@@ -1,11 +1,20 @@
 <script setup>
-import { computed, reactive, ref } from 'vue' // Make sure ref is imported!
+import { computed, reactive, ref, watch } from 'vue'
 const route = useRoute()
 
 const { data: character, pending, error } = await useFetch(`/api/character/${route.params.id}`)
 
 const skillLevels = reactive({})
 const charLevel = ref(80) // Set default to Max Level 80
+
+watch(character, (newChar) => {
+  if (newChar && newChar.kit) {
+    newChar.kit.forEach(skill => {
+      // This forces the slider's starting value to be exactly 1
+      skillLevels[skill.id] = 1 
+    })
+  }
+}, { immediate: true })
 
 // Determine which Ascension bracket the character is in
 const getAscensionIndex = (level) => {
@@ -199,9 +208,14 @@ const rightAbilities = computed(() => {
               <NuxtImg v-if="skill.icon" :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" />
               <div>
                 <span class="text-xs font-bold uppercase tracking-wider text-teal-400 mb-1 block">{{ skill.type_text }}</span>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 flex-wrap">
                   <h3 class="text-xl font-bold text-white">{{ skill.name }}</h3>
-                  <span class="text-[0.65rem] bg-slate-700 px-2 py-0.5 rounded text-slate-300 font-semibold border border-slate-600">Single Target</span>
+                  <span 
+                    v-if="skill.effect_text" 
+                    class="text-[0.65rem] bg-slate-700 px-2 py-0.5 rounded text-slate-300 font-semibold border border-slate-600 uppercase tracking-wider"
+                  >
+                    {{ skill.effect_text }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -231,8 +245,14 @@ const rightAbilities = computed(() => {
               <NuxtImg v-if="skill.icon" :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" />
               <div>
                 <span class="text-xs font-bold uppercase tracking-wider text-teal-400 mb-1 block">{{ skill.type_text }}</span>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 flex-wrap">
                   <h3 class="text-xl font-bold text-white">{{ skill.name }}</h3>
+                  <span 
+                    v-if="skill.effect_text" 
+                    class="text-[0.65rem] bg-slate-700 px-2 py-0.5 rounded text-slate-300 font-semibold border border-slate-600 uppercase tracking-wider"
+                  >
+                    {{ skill.effect_text }}
+                  </span>
                 </div>
               </div>
             </div>
