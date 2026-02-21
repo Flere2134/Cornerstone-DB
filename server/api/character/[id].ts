@@ -66,10 +66,13 @@ export default defineEventHandler(async (event) => {
              mainKitSkills.push(skillNode); 
           }
         } else {
-          // If it isn't one of the 5 main types, it's a Memosprite ability!
-          if (!memospriteSkills.find(s => s.id === skillNode.id)) {
-             if (!skillNode.type_text) skillNode.type_text = 'Memosprite Skill';
-             memospriteSkills.push(skillNode); 
+          // ONLY ADD MEMOSPRITE SKILLS IF THE CHARACTER IS ON THE REMEMBRANCE PATH!
+          // (In the raw game files, the Remembrance path is internally named 'Memory')
+          if (character.path === 'Memory' || character.path === 'Remembrance') {
+            if (!memospriteSkills.find(s => s.id === skillNode.id)) {
+               if (!skillNode.type_text) skillNode.type_text = 'Memosprite Skill';
+               memospriteSkills.push(skillNode); 
+            }
           }
         }
       }
@@ -79,29 +82,29 @@ export default defineEventHandler(async (event) => {
 
     // 3. Construct the servant object
     if (memospriteSkills.length > 0) {
-      let memospriteName = "Memosprite";
       
-      // Strategy A: Check the ENTIRE main kit for the explicit phrase "memosprite [Name]"
-      const mainKitDesc = character.kit.map((s: any) => s.desc).join(' | ');
-      // Looks for "memosprite", ignores HTML tags/punctuation, and captures the next Capitalized word(s)
-      const summonMatch = mainKitDesc.match(/[Mm]emosprite\b[\s,:-]*(?:<[^>]+>[\s,:-]*)*([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?)/);
+      // Hardcoded mapping for 100% accuracy on current 3.0 characters!
+      const knownMemosprites: Record<string, string> = {
+        '1402': 'Garmentmaker',
+        '1407': 'Netherwing',
+        '1409': 'Little Ica',
+        '1413': 'Evey',
+        '1415': 'Demiurge',
+        '8007': 'Mem',
+        '8008': 'Mem'
+      };
+
+      let memospriteName = knownMemosprites[id] || "Memosprite";
       
-      const ignoreWords = ['The', 'A', 'When', 'If', 'While', 'After', 'All', 'Any'];
-      
-      if (summonMatch && summonMatch[1] && !ignoreWords.includes(summonMatch[1].trim())) {
-         memospriteName = summonMatch[1].trim();
-      } else {
-         // Strategy B: Smart-read the Memosprite's own Talent description!
-         const msTalent = memospriteSkills.find((s: any) => s.type_text?.includes('Talent'));
-         if (msTalent && msTalent.desc) {
-            // Strip out starting conditional words (e.g. "When ", "If ", "While ") and HTML tags
-            const cleanDesc = msTalent.desc.replace(/^(?:When|If|While|After|Upon|At|<[^>]+>|\s|,)+/i, '');
-            // Capture the first capitalized word (or pair of words for names like "Little Ica")
-            const nameMatch = cleanDesc.match(/^([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?)/);
-            if (nameMatch && nameMatch[1]) {
-                memospriteName = nameMatch[1].trim();
-            }
-         }
+      // Regex Fallback strictly for future unmapped characters
+      if (!knownMemosprites[id]) {
+        const mainKitDesc = character.kit.map((s: any) => s.desc).join(' | ');
+        const summonMatch = mainKitDesc.match(/[Mm]emosprite\b[\s,:-]*(?:<[^>]+>[\s,:-]*)*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/);
+        const ignoreWords = ['The', 'A', 'When', 'If', 'While', 'After', 'All', 'Any'];
+        
+        if (summonMatch && summonMatch[1] && !ignoreWords.includes(summonMatch[1].trim())) {
+           memospriteName = summonMatch[1].trim();
+        }
       }
 
       character.servant = {
