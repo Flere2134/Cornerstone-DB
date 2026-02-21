@@ -60,20 +60,33 @@ export default defineEventHandler(async (event) => {
     allPossibleSkillIds.forEach(skillId => {
       const skillNode = skillsData[skillId];
       if (skillNode) {
+        // If it's a standard ability, it goes straight to the Main Kit
         if (mainKitTypes.includes(skillNode.type_text)) {
-          // It's a normal ability
           if (!mainKitSkills.find(s => s.id === skillNode.id)) {
              mainKitSkills.push(skillNode); 
           }
         } else {
-          // ONLY ADD MEMOSPRITE SKILLS IF THE CHARACTER IS ON THE REMEMBRANCE PATH!
-          // (In the raw game files, the Remembrance path is internally named 'Memory')
+          // Path-Specific Hidden Abilities!
+          
           if (character.path === 'Memory' || character.path === 'Remembrance') {
+            // 1. Remembrance Memosprites
             if (!memospriteSkills.find(s => s.id === skillNode.id)) {
                if (!skillNode.type_text) skillNode.type_text = 'Memosprite Skill';
                memospriteSkills.push(skillNode); 
             }
+          } else if (character.path === 'Joy' || character.path === 'Elation') {
+            // 2. Elation Mechanics (In the code, the Elation path is called 'Joy')
+            // We specifically ignore hidden nodes named "Attack" to prevent junk data from showing up!
+            if (skillNode.name && skillNode.name !== 'Attack') {
+               // Assign it the 'Elation' type if the game files left it blank
+               if (!skillNode.type_text) skillNode.type_text = 'Elation';
+               
+               if (!mainKitSkills.find(s => s.id === skillNode.id)) {
+                  mainKitSkills.push(skillNode); 
+               }
+            }
           }
+          
         }
       }
     });

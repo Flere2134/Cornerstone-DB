@@ -96,7 +96,7 @@ const getStat = (statName, level) => {
 
 // --- SORTING HIERARCHY ---
 const leftOrder = ['Basic ATK', 'Ultimate', 'Technique']
-const rightOrder = ['Skill', 'Talent']
+const rightOrder = ['Skill', 'Talent', 'Elation', 'Elation Skill', 'Joy']
 
 const leftAbilities = computed(() => {
   if (!character.value?.kit) return []
