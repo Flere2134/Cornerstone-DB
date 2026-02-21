@@ -88,7 +88,7 @@ const getStat = (statName, level) => {
     <div v-else-if="lc" class="grid grid-cols-1 lg:grid-cols-3 gap-12">
       
       <div class="col-span-1 flex items-start justify-center lg:sticky lg:top-8 h-fit">
-        <NuxtImg
+        <img
           :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${lc.portrait || lc.preview}`"
           class="w-full max-w-md object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] rounded-xl"
           alt="Lightcone Portrait"
@@ -100,14 +100,14 @@ const getStat = (statName, level) => {
         <div>
           <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">{{ lc.name }}</h1>
           <div class="flex items-center flex-wrap gap-4">
-            <NuxtImg 
+            <img 
               :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/deco/Star${lc.rarity}.png`" 
               class="h-7 w-auto object-contain drop-shadow-[0_2px_10px_rgba(251,191,36,0.3)]" 
               alt="Rarity Stars" 
             />
             
             <div class="flex items-center gap-2">
-              <NuxtImg :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(lc.path)}.png`" class="w-6 h-6 opacity-90" />
+              <img :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(lc.path)}.png`" class="w-6 h-6 opacity-90" />
               <span class="text-slate-300 font-medium">{{ getOfficialPath(lc.path) }}</span>
             </div>
           </div>

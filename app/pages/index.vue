@@ -106,7 +106,7 @@ const handleAventurineGamble = (e, character) => {
             :title="getOfficialPath(path)"
             :class="['p-1.5 rounded-md transition-all flex items-center justify-center', selectedPath === path ? 'bg-teal-500/20 border-teal-500/30 ring-1 ring-teal-500/50' : 'hover:bg-slate-700 border border-transparent']"
           >
-            <NuxtImg 
+            <img 
               :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(path)}.png`" 
               width="24" height="24" 
               :class="['transition-opacity', selectedPath === path ? 'opacity-100' : 'opacity-50 hover:opacity-80']"
@@ -123,7 +123,7 @@ const handleAventurineGamble = (e, character) => {
             :title="element === 'Thunder' ? 'Lightning' : element"
             :class="['p-1.5 rounded-md transition-all flex items-center justify-center', selectedElement === element ? 'bg-teal-500/20 border-teal-500/30 ring-1 ring-teal-500/50' : 'hover:bg-slate-700 border border-transparent']"
           >
-            <NuxtImg 
+            <img 
               :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/element/${element}.png`" 
               width="24" height="24" 
               :class="['transition-opacity', selectedElement === element ? 'opacity-100' : 'opacity-50 hover:opacity-80']"
@@ -151,7 +151,7 @@ const handleAventurineGamble = (e, character) => {
             : 'hover:border-purple-400 hover:shadow-[0_0_15px_-3px_rgba(192,132,252,0.3)]'
         ]"
       >
-        <NuxtImg
+        <img
           v-if="character.preview"
           :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${character.preview}`"
           loading="lazy"

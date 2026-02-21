@@ -73,7 +73,7 @@ const togglePath = (path) => {
             :title="getOfficialPath(path)"
             :class="['p-1.5 rounded-md transition-all flex items-center justify-center', selectedPath === path ? 'bg-teal-500/20 border border-teal-500/30' : 'hover:bg-slate-700 border border-transparent']"
           >
-            <NuxtImg 
+            <img 
               :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(path)}.png`" 
               width="24" height="24" 
               :class="['transition-opacity', selectedPath === path ? 'opacity-100' : 'opacity-50 hover:opacity-80']"
@@ -101,7 +101,7 @@ const togglePath = (path) => {
           'hover:border-blue-400 hover:shadow-[0_0_15px_-3px_rgba(96,165,250,0.3)]'
         ]"
       >
-        <NuxtImg
+        <img
           v-if="lc.preview"
           :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${lc.preview}`"
           loading="lazy"

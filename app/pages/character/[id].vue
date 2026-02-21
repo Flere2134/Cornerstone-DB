@@ -152,7 +152,7 @@ const memospriteRightAbilities = computed(() => {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
         
         <div class="flex justify-center items-start">
-          <NuxtImg
+          <img
             :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${character.portrait}`"
             class="w-full max-w-lg object-contain drop-shadow-[0_0_30px_rgba(45,212,191,0.2)]"
             alt="Character Portrait"
@@ -204,7 +204,7 @@ const memospriteRightAbilities = computed(() => {
               <tr class="border-b border-slate-700">
                 <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold align-middle">Rarity</th>
                 <td class="p-4">
-                  <NuxtImg 
+                  <img 
                     :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/deco/Star${character.rarity}.png`" 
                     class="h-6 w-auto object-contain drop-shadow-md" 
                     alt="Rarity Stars" 
@@ -214,14 +214,14 @@ const memospriteRightAbilities = computed(() => {
               <tr class="border-b border-slate-700">
                 <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">Element</th>
                 <td class="p-4 flex items-center gap-2 font-medium">
-                  <NuxtImg :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/element/${character.element}.png`" class="w-5 h-5" />
+                  <img :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/element/${character.element}.png`" class="w-5 h-5" />
                   {{ character.element === 'Thunder' ? 'Lightning' : character.element }}
                 </td>
               </tr>
               <tr>
                 <th class="p-4 bg-slate-800/80 text-slate-400 font-semibold">Path</th>
                 <td class="p-4 flex items-center gap-2 font-medium">
-                  <NuxtImg :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(character.path)}.png`" class="w-5 h-5 opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
+                  <img :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/${getOfficialPath(character.path)}.png`" class="w-5 h-5 opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
                   {{ getOfficialPath(character.path) }}
                 </td>
               </tr>
@@ -239,7 +239,7 @@ const memospriteRightAbilities = computed(() => {
         <div class="space-y-8">
           <div v-for="skill in leftAbilities" :key="skill.id" class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-md">
             <div class="flex items-center gap-4 mb-4">
-              <NuxtImg v-if="skill.icon" :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" />
+              <img v-if="skill.icon" :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" />
               <div>
                 <span class="text-xs font-bold uppercase tracking-wider text-teal-400 mb-1 block">{{ skill.type_text }}</span>
                 <div class="flex items-center gap-3 flex-wrap">
@@ -276,7 +276,7 @@ const memospriteRightAbilities = computed(() => {
         <div class="space-y-8">
           <div v-for="skill in rightAbilities" :key="skill.id" class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-md">
             <div class="flex items-center gap-4 mb-4">
-              <NuxtImg v-if="skill.icon" :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" />
+              <img v-if="skill.icon" :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" />
               <div>
                 <span class="text-xs font-bold uppercase tracking-wider text-teal-400 mb-1 block">{{ skill.type_text }}</span>
                 <div class="flex items-center gap-3 flex-wrap">
@@ -320,7 +320,7 @@ const memospriteRightAbilities = computed(() => {
         <div class="flex flex-col items-center justify-center mb-10">
           <div class="relative w-28 h-28 md:w-36 md:h-36 rounded-full bg-slate-800/50 border-2 border-slate-500/30 p-3">
             <div class="absolute inset-0 rounded-full bg-slate-500/10"></div>
-            <NuxtImg 
+            <img 
               :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${character.servant.icon}`" 
               class="w-full h-full object-contain drop-shadow-xl relative z-10"
               :alt="character.servant.name"
@@ -340,7 +340,7 @@ const memospriteRightAbilities = computed(() => {
               <div class="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div class="relative z-10">
                 <div class="flex items-center gap-4 mb-4">
-                  <NuxtImg 
+                  <img 
                     v-if="skill.icon" 
                     :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" 
                     class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" 
@@ -386,7 +386,7 @@ const memospriteRightAbilities = computed(() => {
               <div class="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div class="relative z-10">
                 <div class="flex items-center gap-4 mb-4">
-                  <NuxtImg 
+                  <img 
                     v-if="skill.icon" 
                     :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${skill.icon}`" 
                     class="w-14 h-14 rounded-full bg-slate-900 border-2 border-slate-600" 
@@ -434,7 +434,7 @@ const memospriteRightAbilities = computed(() => {
             :key="ability.id" 
             class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 flex gap-4 items-start"
           >
-            <NuxtImg 
+            <img 
               v-if="ability.icon" 
               :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${ability.icon}`" 
               class="w-12 h-12 bg-slate-900 rounded-full border border-slate-600 flex-shrink-0" 
@@ -456,7 +456,7 @@ const memospriteRightAbilities = computed(() => {
             >
               <span class="flex items-center gap-3 font-semibold">
                 
-                <NuxtImg 
+                <img 
                   v-if="stat.icon" 
                   :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${stat.icon}`" 
                   class="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]" 
@@ -475,7 +475,7 @@ const memospriteRightAbilities = computed(() => {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <div v-for="(eidolon, index) in character.eidolons" :key="eidolon.id" class="flex gap-5 bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-lg hover:border-teal-500/50 transition-colors">
-          <NuxtImg 
+          <img 
             v-if="eidolon.icon" 
             :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${eidolon.icon}`" 
             class="w-20 h-20 rounded-full bg-slate-900 border-2 border-slate-600 flex-shrink-0 object-cover" 

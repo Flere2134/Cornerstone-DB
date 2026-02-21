@@ -76,7 +76,7 @@ const filteredRelics = computed(() => {
         class="group bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-lg hover:border-teal-400 hover:shadow-[0_0_15px_-3px_rgba(45,212,191,0.3)] transition-all duration-300 flex flex-col"
       >
         <div class="flex items-center gap-4 p-5 border-b border-slate-700 bg-slate-900/50 group-hover:bg-slate-800/80 transition-colors">
-          <NuxtImg 
+          <img 
             v-if="relic.icon"
             :src="`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/${relic.icon}`" 
             class="w-16 h-16 object-contain drop-shadow-md"
